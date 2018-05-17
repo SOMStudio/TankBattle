@@ -106,7 +106,7 @@ public class GameController_Tank : BaseGameController
         focusPlayerScript = thePlayerScript;
 
 		// see if we have a camera target object to look at
-		Transform aTarget= playerGO1.transform.FindChild("CamTarget");
+		Transform aTarget= playerGO1.transform.Find("CamTarget");
 
 		if(aTarget!=null)
 		{
