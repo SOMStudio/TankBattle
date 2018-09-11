@@ -474,7 +474,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 			// it's a left hit, so it's a type 1 right now (though it could change when we check on the other side)
 			obstacleHitType=1;
 		}
-		
+
 		if(Physics.Raycast( myTransform.position,myTransform.forward + ( myTransform.right * -0.5f ), out hit, wallAvoidDistance ))
 		{
 			// obstacle
