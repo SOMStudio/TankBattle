@@ -3,13 +3,13 @@ using System.Collections;
 
 [AddComponentMenu("Sample Game Glue Code/Laser Blast Survival/Top Down Player Controller")]
 
-public class Player_Tank : BaseTopDown
+public class PlayerTopDown_Tank : BaseTopDown
 {
 	private bool isInvulnerable;
 	private bool isRespawning;
 	
-	public BasePlayerManager myPlayerManager;
-	public BaseUserManager myDataManager;
+	public PlayerManager_Tank myPlayerManager;
+	public UserManager_Tank myDataManager;
 
 	public bool godMode =false;
 	public GameObject theMeshGO;
@@ -39,10 +39,10 @@ public class Player_Tank : BaseTopDown
 		
 		// if a player manager is not set in the editor, let's try to find one
 		if(myPlayerManager==null)
-			myPlayerManager= myGO.GetComponent<BasePlayerManager>();
+			myPlayerManager= myGO.GetComponent<PlayerManager_Tank>();
 		
 		// set up the data for our player
-		myDataManager= myPlayerManager.DataManager;
+		myDataManager= myPlayerManager.myDataManager;
 		myDataManager.SetName ("Player");
 		myDataManager.SetHealth (3);
 		myDataManager.SetDetaleHealth (100);
@@ -171,7 +171,7 @@ public class Player_Tank : BaseTopDown
 		// when something collides with our ship, we check its layer to see if it is on 11
 		if(collider.gameObject.layer==10 && !isRespawning && !isInvulnerable)
 		{
-			Enemy_Bot enemyManager = collider.gameObject.GetComponent<Enemy_Bot> ();
+			ArmedEnemy_Tank enemyManager = collider.gameObject.GetComponent<ArmedEnemy_Tank> ();
 			if (enemyManager) {
 				float reduceHels = myDataManager.GetProtection () * enemyManager.GetContactDamage ();
 

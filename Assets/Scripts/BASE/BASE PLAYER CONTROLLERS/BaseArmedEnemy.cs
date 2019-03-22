@@ -11,8 +11,6 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 	
 	public int pointsValue = 50;
 	public int thisEnemyStrength = 1;
-	public float thisEnemyDetaleStrange = 100;
-	public float thisEnemyProtection = 1;
 
 	public bool thisGameObjectShouldFire;
 	public bool onlyFireWhenOnscreen;
@@ -45,7 +43,7 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 		Init ();
 	}
 	
-	public void Init()
+	public virtual void Init()
 	{
 		// cache our transform
 		myTransform = transform;
@@ -66,14 +64,16 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 				
 		// if a player manager is not set in the editor, let's try to find one
 		if (myPlayerManager == null) {
-			myPlayerManager = myGO.AddComponent<BasePlayerManager> ();
+			myPlayerManager = myGO.GetComponent<BasePlayerManager> ();
+
+			if (myPlayerManager == null) {
+				myPlayerManager = myGO.AddComponent<BasePlayerManager> ();
+			}
 		}
 		
 		myDataManager = myPlayerManager.DataManager;
 		myDataManager.SetName ("Enemy");
 		myDataManager.SetHealth (thisEnemyStrength);
-		myDataManager.SetDetaleHealth (thisEnemyDetaleStrange);
-		myDataManager.SetProtection (thisEnemyProtection);
 
 		canFire = true;
 		didInit = true;
@@ -87,58 +87,48 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 		if(!canControl)
 			return;
 		
-		if(thisGameObjectShouldFire)
-		{
+		if (thisGameObjectShouldFire) {
 			// we use doFire to determine whether or not to fire right now
-			doFire=false;
+			doFire = false;
 			
 			// canFire is used to control a delay between firing
-			if( canFire )
-			{
-				if( currentState==AIAttackState.random_fire )
-				{
+			if (canFire) {
+				if (currentState == AIAttackState.random_fire) {
 					// if the random number is over x, fire
-					if( Random.Range(0,100)>98 )
-					{
-						doFire=true;
+					if (Random.Range (0, 100) > 98) {
+						doFire = true;
 					}
-				} else if( currentState==AIAttackState.look_and_destroy )
-				{
-					if(Physics.Raycast( myTransform.position, myTransform.forward, out rayHit ))
-					{
+				} else if (currentState == AIAttackState.look_and_destroy) {
+					if (Physics.Raycast (myTransform.position, myTransform.forward, out rayHit)) {
 						// is it an opponent to be shot at?
-						if( rayHit.transform.CompareTag( tagOfTargetsToShootAt ) )
-						{
+						if (rayHit.transform.CompareTag (tagOfTargetsToShootAt)) {
 							//	we have a match on the tag, so let's shoot at it
-							doFire=true;
+							doFire = true;
 						}
 					}
 		
 				} else {
 					// if we're not set to random fire or look and destroy, just fire whenever we can
-					doFire=true;	
+					doFire = true;	
 				}
 			}
 				
-			if( doFire )
-			{
+			if (doFire) {
 				// we only want to fire if we are on-screen, visible on the main camera
-				if(onlyFireWhenOnscreen && !rendererToTestAgainst.IsVisibleFrom( Camera.main ))
-				{
-					doFire=false;
+				if (onlyFireWhenOnscreen && !rendererToTestAgainst.IsVisibleFrom (Camera.main)) {
+					doFire = false;
 					return;
 				}
 				
 				// tell weapon control to fire, if we have a weapon controller
-				if(weaponControl!=null)
-				{
+				if (weaponControl != null) {
 					// tell weapon to fire
-					weaponControl.Fire();
+					weaponControl.Fire ();
 				}
 				// set a flag to disable firing temporarily (providing a delay between firing)
-				canFire= false;
+				canFire = false;
 				// invoke a function call in <fireDelayTime> to reset canFire back to true, allowing another firing session
-				Invoke ( "ResetFire", fireDelayTime );
+				Invoke ("ResetFire", fireDelayTime);
 			}		
 		}
 	}

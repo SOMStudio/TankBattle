@@ -1,17 +1,34 @@
 using UnityEngine;
 using System.Collections;
 
-public class Enemy_Bot : BaseArmedEnemy 
+public class ArmedEnemy_Tank : BaseArmedEnemy 
 {
+	public float thisEnemyDetaleStrange = 100;
+	public float thisEnemyProtection = 1;
+
 	public int contactDamage = 1;
+
+	public PlayerManager_Tank myPlayerManager_New;
+	public UserManager_Tank myDataManager_New;
 
 	private bool isRespawning;
 	
 	// here we add respawning and collision to the base armed enemy script
-	public void Start ()
+	public override void Init ()
 	{
-		base.Start ();
-		
+		base.Init ();
+
+		if (myPlayerManager_New == null) {
+			myPlayerManager_New = myGO.GetComponent<PlayerManager_Tank> ();
+
+			if (myPlayerManager_New == null) {
+				myPlayerManager_New = myGO.AddComponent<PlayerManager_Tank> ();
+			}
+		}
+
+		myDataManager_New.SetDetaleHealth (thisEnemyDetaleStrange);
+		myDataManager_New.SetProtection (thisEnemyProtection);
+
 		// lets find our ai controller
 		BaseAIController aControl= (BaseAIController) gameObject.GetComponent<BaseAIController>();
 
@@ -35,18 +52,18 @@ public class Enemy_Bot : BaseArmedEnemy
 	}
 
 	void ReduceLife(float val) {
-		myDataManager.ReduceDetaleHealth (val);
+		myDataManager_New.ReduceDetaleHealth (val);
 
-		if (myDataManager.GetDetaleHealth () < 0) {
+		if (myDataManager_New.GetDetaleHealth () < 0) {
 			LostLife ();
 		}
 	}
 
 	void LostLife()
 	{
-		myDataManager.ReduceHealth(1);
+		myDataManager_New.ReduceHealth(1);
 
-		if( myDataManager.GetHealth()==0 )
+		if( myDataManager_New.GetHealth()==0 )
 		{
 			// tell game controller to make an explosion at our position and to award the player points for hitting us
 			TellGCEnemyDestroyed();
@@ -67,7 +84,7 @@ public class Enemy_Bot : BaseArmedEnemy
 		{
 			ProjectileController projManager = collider.gameObject.GetComponent<ProjectileController> ();
 			if (projManager) {
-				float reduceHels = myDataManager.GetProtection () * projManager.overrideDamageValue;
+				float reduceHels = myDataManager_New.GetProtection () * projManager.overrideDamageValue;
 				tempINT= int.Parse( collider.gameObject.name );
 
 				ReduceLife (reduceHels);

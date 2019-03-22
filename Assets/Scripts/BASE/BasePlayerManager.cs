@@ -5,7 +5,7 @@ using System.Collections;
 
 public class BasePlayerManager : MonoBehaviour
 {
-	public bool didInit;
+	public bool didInit = false;
 	
 	// the user manager and AI controllers are publically accessible so that
 	// our individual control scripts can access them easily
@@ -15,8 +15,6 @@ public class BasePlayerManager : MonoBehaviour
 	// access our details when they initialize on Start
 	public virtual void Awake ()
 	{
-		didInit=false;
-		
 		// rather than clutter up the start() func, we call Init to do any
 		// startup specifics
 		Init();
@@ -25,11 +23,13 @@ public class BasePlayerManager : MonoBehaviour
 	public virtual void Init ()
 	{
 		// cache ref to our user manager
-		DataManager= gameObject.GetComponent<BaseUserManager>();
+		if (!DataManager) {
+			DataManager = gameObject.GetComponent<BaseUserManager> ();
 		
-		if(DataManager==null)
-			DataManager= gameObject.AddComponent<BaseUserManager>();
-		
+			if (!DataManager)
+				DataManager = gameObject.AddComponent<BaseUserManager> ();
+		}
+
 		// do play init things in this function
 		didInit= true;
 	}

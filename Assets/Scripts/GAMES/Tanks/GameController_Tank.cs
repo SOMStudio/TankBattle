@@ -22,15 +22,15 @@ public class GameController_Tank : BaseGameController
     private ArrayList playerList;
 	private ArrayList playerTransforms;
 	
-	private Player_Tank thePlayerScript;
-	private Player_Tank focusPlayerScript;
+	private PlayerTopDown_Tank thePlayerScript;
+	private PlayerTopDown_Tank focusPlayerScript;
 	
 	[System.NonSerialized]
-	public BaseUserManager mainPlayerDataManager1;
+	public UserManager_Tank mainPlayerDataManager1;
 	
 	private int numberOfPlayers;
 	
-	public UI_LBS UIControl;
+	public UI_Tank UIControl;
 	
 	[System.NonSerialized]
 	public static GameController_Tank Instance;
@@ -84,7 +84,7 @@ public class GameController_Tank : BaseGameController
 		for ( int i = 0; i < numberOfPlayers; i++ )
         {
 			Transform tempT= (Transform)playerTransforms[i];
-			Player_Tank tempController= tempT.GetComponent<Player_Tank>();
+			PlayerTopDown_Tank tempController= tempT.GetComponent<PlayerTopDown_Tank>();
 			playerList.Add(tempController);
 			tempController.Init ();
 		}
@@ -94,7 +94,7 @@ public class GameController_Tank : BaseGameController
 
         // grab a reference to the focussed player's car controller script, so that we can
         // do things like access its speed variable
-        thePlayerScript = ( Player_Tank ) playerGO1.GetComponent<Player_Tank>();
+        thePlayerScript = ( PlayerTopDown_Tank ) playerGO1.GetComponent<PlayerTopDown_Tank>();
 
         // assign this player the id of 0
         thePlayerScript.SetID( 0 );
@@ -124,7 +124,7 @@ public class GameController_Tank : BaseGameController
 	void StartPlayer()
 	{
 		// grab a reference to the main player's data manager so we can update its values later on (scoring, lives etc.)
-		mainPlayerDataManager1= playerGO1.GetComponent<BasePlayerManager>().DataManager;
+		mainPlayerDataManager1= playerGO1.GetComponent<PlayerManager_Tank>().myDataManager;
 		
 		// all ready to play, let's go!
 		thePlayerScript.GameStart();
@@ -168,7 +168,7 @@ public class GameController_Tank : BaseGameController
 		theRadarControlScript.RemoveEnemyBlip( aTransform );
 	}
 	
-	public Player_Tank GetMainPlayerScript ()
+	public PlayerTopDown_Tank GetMainPlayerScript ()
 	{
 		return focusPlayerScript;
 	}

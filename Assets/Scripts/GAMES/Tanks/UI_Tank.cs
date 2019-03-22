@@ -3,7 +3,7 @@ using System.Collections;
 
 [AddComponentMenu("Sample Game Glue Code/Laser Blast Survival/In-Game UI")]
 
-public class UI_LBS : BaseUIDataManager
+public class UI_Tank : BaseUIDataManager
 {
 	public int player_livesdetale;
 

@@ -12,26 +12,22 @@ public class BaseUserManager : MonoBehaviour
 	private int highScore;
 	private int level;
 	private int health;
+
 	private bool isFinished;
 	
 	// this is the display name of the player
-	public string playerName ="Anon";
-
-	// add property
-	public float detaleHelth;
-	public float protection;
+	public string playerName ="Anonim";
 		
 	public virtual void GetDefaultData()
 	{
-		playerName = "Anon";
-		score = 0;
-		level = 1;
-		health = 3;
-		highScore = 0;
-		isFinished = false;
+		playerName="Anonim";
 
-		detaleHelth = 100;
-		protection = 1;
+		score=0;
+		level=1;
+		health=3;
+		highScore=0;
+
+		isFinished=false;
 	}
 	
 	public string GetName()
@@ -57,26 +53,6 @@ public class BaseUserManager : MonoBehaviour
 	public int GetHighScore()
 	{
 		return highScore;
-	}
-
-	public float GetProtection()
-	{
-		return protection;
-	}
-
-	public void AddProtection(float num)
-	{
-		protection+=num;
-	}
-
-	public void ReduceProtection(float num)
-	{
-		protection-=num;
-	}
-
-	public void SetProtection(float num)
-	{
-		protection=num;
 	}
 		
 	public int GetScore()
@@ -117,26 +93,6 @@ public class BaseUserManager : MonoBehaviour
 	public void SetHealth(int num)
 	{
 		health=num;
-	}
-
-	public float GetDetaleHealth()
-	{
-		return detaleHelth;
-	}
-
-	public void AddDetaleHealth(float num)
-	{
-		detaleHelth+=num;
-	}
-
-	public void ReduceDetaleHealth(float num)
-	{
-		detaleHelth-=num;
-	}
-
-	public void SetDetaleHealth(float num)
-	{
-		detaleHelth=num;
 	}
 	
 	public bool GetIsFinished()
