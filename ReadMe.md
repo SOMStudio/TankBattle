@@ -1,4 +1,6 @@
-Task:
+# Tank battle 3D
+
+## Task:
 1) On the stage there is a tank (with health, protection and speed of movement)
 2) The tank must be able to move around the stage, turn (arrows on the keyboard)
  and be able to shoot (button X)
@@ -20,10 +22,14 @@ Scene size should be limited. Optionally, various obstacles can be found on the
  stage. The appearance can be indicated by a picture or a color. Calculation of
  damage: health = health - damage * protection (0 ... 1).
 
-Implemented:
+## Implemented:
+All
+
 Control: Left, Right, Up, Down
 Weapon Fire: x, mouseLeft
 Weapon Change: 1, 2, 3
 Weapon Change cyclically: q, w
 
-Unity 5.6.2
+## Unity 5.6.2
+
+![Tank battle](screenshot.png)
