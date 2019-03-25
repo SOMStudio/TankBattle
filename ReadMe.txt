@@ -25,3 +25,5 @@ Control: Left, Right, Up, Down
 Weapon Fire: x, mouseLeft
 Weapon Change: 1, 2, 3
 Weapon Change cyclically: q, w
+
+Unity 5.6.2
