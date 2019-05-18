@@ -5,15 +5,14 @@ using System.Collections;
 
 public class Standard_SlotWeaponController : BaseWeaponController {
 	
-	public bool allowWeaponSwitchKeys= true;
-	
-	public void Update()
+	[SerializeField]
+	private bool allowWeaponSwitchKeys = true;
+
+	// main event
+	void Update()
 	{
 		if(!allowWeaponSwitchKeys)
 			return;
-		
-		// do weapon selection / switching slots
-		// ---------------------------------------
 		
 		if(Input.GetKey("1"))
 		{

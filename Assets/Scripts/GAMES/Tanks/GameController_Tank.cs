@@ -1,21 +1,23 @@
 using UnityEngine;
 using System.Collections;
 
-[AddComponentMenu("Sample Game Glue Code/Laser Blast Survival/Game Controller")]
-
 public class GameController_Tank : BaseGameController
 {
-	public string mainMenuSceneName = "menu_Tanks";
-	public GameObject[] playerPrefabList;
+	[Header("Main Settings")]
+	[SerializeField]
+	private string mainMenuSceneName = "menu_Tanks";
+	[SerializeField]
+	private float gameSpeed=1;
+
+	[Header("Player Settings")]
+	[SerializeField]
+	private GameObject[] playerPrefabList;
 	
-	public SpawnController_Tank SpawnManager;
-	
-	public Transform playerParent;
-    public Transform [] startPoints;
+	[SerializeField]
+	private Transform playerParent;
+	[SerializeField]
+	private Transform [] startPoints;
     
-	[System.NonSerialized]
-    public GameObject playerGO1;
-	
 	private Vector3[] playerStarts;
 	private Quaternion[] playerRotations;
 	
@@ -24,33 +26,60 @@ public class GameController_Tank : BaseGameController
 	
 	private PlayerTopDown_Tank thePlayerScript;
 	private PlayerTopDown_Tank focusPlayerScript;
-	
-	[System.NonSerialized]
-	public UserManager_Tank mainPlayerDataManager1;
-	
+
 	private int numberOfPlayers;
-	
-	public UI_Tank UIControl;
-	
+
+	private UserManager_Tank mainPlayerDataManager1;
+	private GameObject playerGO1;
+
 	[System.NonSerialized]
 	public static GameController_Tank Instance;
-	
-	public float gameSpeed=1;
-	
-	public RadarGUI theRadarControlScript;
-	
-	public GameController_Tank()
-	{
-		Instance=this;
+
+	[Header("Managers")]
+	[SerializeField]
+	private UI_Tank menuManager;
+	[SerializeField]
+	private SpawnController_Tank spawnManager;
+	[SerializeField]
+	private RadarGUI radarManager;
+	[SerializeField]
+	private BaseSoundController soundManager;
+
+	// main event
+	void Awake() {
+		// init object
+		Init ();
 	}
 	
 	public void Start()
 	{
-		Init();
-		Time.timeScale=gameSpeed;
+		StartGame ();
+
+		Time.timeScale = gameSpeed;
 	}
-	
-	public void Init()
+
+	// main logic
+	void Init() {
+		// activate instance
+		if (Instance == null) {
+			Instance = this;
+
+			InitManagers ();
+		} else if (Instance != this) {
+			Destroy (gameObject);
+		}
+	}
+
+	void InitManagers() {
+		if (!menuManager) {
+			menuManager = UI_Tank.Instance;
+		}
+		if (!soundManager) {
+			soundManager = BaseSoundController.Instance;
+		}
+	}
+
+	public override void StartGame()
 	{
 		Invoke ("StartPlayer",1);
 		
@@ -118,7 +147,7 @@ public class GameController_Tank : BaseGameController
 		}
 
 		// finally, tell the radar about the new player
-		theRadarControlScript.SetCenterObject( playerGO1.transform );
+		radarManager.SetCenterObject( playerGO1.transform );
 	}
 	
 	void StartPlayer()
@@ -145,8 +174,8 @@ public class GameController_Tank : BaseGameController
 		Explode ( aPosition );
 		
 		// tell spawn controller that we're one enemy closer to the next wave
-		SpawnManager.DecriseCountSpawnedObject ();
-		SpawnManager.SpawnRandomObjectWithLimit ();
+		spawnManager.DecriseCountSpawnedObject ();
+		spawnManager.SpawnRandomObjectWithLimit ();
 	}
 	
 	public void PlayerHit(Transform whichPlayer)
@@ -160,12 +189,12 @@ public class GameController_Tank : BaseGameController
 	
 	public void AddEnemyToRadar( Transform aTransform )
 	{
-		theRadarControlScript.AddEnemyBlipToList( aTransform );
+		radarManager.AddEnemyBlipToList( aTransform );
 	}
 	
 	public void RemoveEnemyFromRadar( Transform aTransform )
 	{
-		theRadarControlScript.RemoveEnemyBlip( aTransform );
+		radarManager.RemoveEnemyBlip( aTransform );
 	}
 	
 	public PlayerTopDown_Tank GetMainPlayerScript ()
@@ -187,7 +216,7 @@ public class GameController_Tank : BaseGameController
 	{
 		// this is a single player game, so just end the game now
 		// both players are dead, so end the game
-		UIControl.ShowGameOver();
+		menuManager.ShowGameOver();
 		Invoke ("Exit",5);
 	}
 	
@@ -200,17 +229,17 @@ public class GameController_Tank : BaseGameController
 	// 
 	public void UpdateScoreP1( int aScore )
 	{
-		UIControl.UpdateScoreP1( aScore );
+		menuManager.UpdateScoreP1( aScore );
 	} 
 	
 	public void UpdateLivesP1( int aLives )
 	{
-		UIControl.UpdateLivesP1( aLives );
+		menuManager.UpdateLivesP1( aLives );
 	}
 
 	public void UpdateLivesDetaleP1( float aLivesDetale )
 	{
-		UIControl.UpdateLivesDetale( aLivesDetale );
+		menuManager.UpdateLivesDetale( aLivesDetale );
 	}
 
 }

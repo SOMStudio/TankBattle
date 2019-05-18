@@ -1,5 +1,3 @@
-// this script by Michael Garforth in the public domain on http://wiki.unity3d.com/
-
 using UnityEngine;
  
 public static class RendererExtensions

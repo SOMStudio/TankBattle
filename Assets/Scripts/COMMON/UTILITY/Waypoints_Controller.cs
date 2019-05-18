@@ -1,6 +1,3 @@
-// This is based on the waypoints.js script from the book
-// Game Development for iOS with Unity3d by Jeff W Murray
-
 using UnityEngine;
 using System.Collections;
 
@@ -10,26 +7,28 @@ public class Waypoints_Controller : MonoBehaviour {
 
 	[ExecuteInEditMode]
 
-	// this script simply gives us a visual path to make it easier to edit
-	// our waypoints
-	private Vector3 firstPoint; // store our first waypoint so we can loop the path
-	private float distance; // used to calculate distance between points
-	private Transform TEMPtrans; // a temporary holder for a transform
-	private int TEMPindex; // a temporary holder for an index number
+	[SerializeField]
+	private Transform[] transforms;
+	[SerializeField]
+	private bool closed = true;
+	[SerializeField]
+	private bool shouldReverse = false;
+
+	private Vector3 firstPoint;
+	private float distance;
+	private Transform TEMPtrans;
+	private int TEMPindex;
 	private int totalTransforms;
-	
+
 	private Vector3 diff;
 	private float curDistance;
 	private Transform closest;
-	
+
 	private Vector3 currentPos;
 	private Vector3 lastPos;
 	private Transform pointT;
 
-	public Transform[] transforms; // arraylist for easy access to transforms
-	public bool closed=true;
-	public bool shouldReverse;
-	
+	// main event
 	void Start()
 	{
 		// make sure that when this script starts (on the device) that
@@ -107,22 +106,20 @@ public class Waypoints_Controller : MonoBehaviour {
 			Gizmos.DrawLine(currentPos, firstPoint);
 		}
 	}
-	
-	public void GetTransforms()
-	{
-		// we store all of the waypoints transforms in an ArrayList,
-		// which is initialised here (we always need to do this before we can
-		// use ArrayLists)
-		//transforms=new ArrayList();
-		
-		// now we go through any transforms 'under' this transform, so all of
-		// the child objects that act as our waypoints get put into our arraylist
-		//foreach(Transform t in transform)
-		//{
-		//	// add this transform to our arraylist
-		//	transforms.Add(t);
-		//}
-		
+
+	// main logic
+	public bool Closed {
+		get { return closed;}
+		set { closed = value; }
+	}
+
+	public bool ShouldReverse {
+		get { return shouldReverse; }
+		set { shouldReverse = value; }
+	}
+
+	private void GetTransforms()
+	{		
 		totalTransforms = transforms.Length;
 	}
 	
@@ -182,10 +179,6 @@ public class Waypoints_Controller : MonoBehaviour {
 			return -1;
 		}
 	}
-	
-	// this function has the addition of a check to avoid finding the same transform as one passed in. we use
-	// this to make sure that when we are looking for the nearest waypoint we don't find the same one as
-	// we just passed
 	
 	public int FindNearestWaypoint ( Vector3 fromPos , Transform exceptThis, float maxRange) 
 	{		
@@ -272,5 +265,4 @@ public class Waypoints_Controller : MonoBehaviour {
 
 		return totalTransforms;
 	}
-		
 }

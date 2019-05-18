@@ -1,27 +1,35 @@
-// This script is based on the script from the Unity wiki (originally posted by me!)
-
 using UnityEngine;
 using System.Collections;
  
 public class RadarGUI : MonoBehaviour 
 {
-	public Transform centerObject;
+	private Transform centerObject;
 	
-	public Texture enemyBlipTexture;
-	public Texture radarBackgroundTexture;
+	[SerializeField]
+	private Texture enemyBlipTexture;
+	[SerializeField]
+	private Texture radarBackgroundTexture;
  
 	private Vector2 drawCenterPosition;
-	public Vector2 drawOffset= new Vector2(5,5);
+	[SerializeField]
+	private Vector2 drawOffset= new Vector2(5,5);
 	
-	public Vector2 drawBlipOffset;
+	[SerializeField]
+	private Vector2 drawBlipOffset;
 	
-	public string defaultTagFilter= "enemy";
-	public float mapScale= 0.3f;
-	public float maxDist= 200;
-	public float mapWidth= 256;
-	public float mapHeight= 256;
+	[SerializeField]
+	private string defaultTagFilter= "enemy";
+	[SerializeField]
+	private float mapScale= 0.3f;
+	[SerializeField]
+	private float maxDist= 200;
+	[SerializeField]
+	private float mapWidth= 256;
+	[SerializeField]
+	private float mapHeight= 256;
 	
-	public bool rotateAroundPlayer;
+	[SerializeField]
+	private bool rotateAroundPlayer;
 	
  	private ArrayList radarList;
 	private ArrayList textureList;
@@ -45,59 +53,65 @@ public class RadarGUI : MonoBehaviour
 		BottomRight,
 	}
 	
-	public Positioning drawPosition;
-	
+	[SerializeField]
+	private Positioning drawPosition;
+
+	// main event
 	void Start()
 	{
 		SetUpRadar();
 	}
-	
-	void SetUpRadar()
+
+	void OnGUI() 
+	{
+		// draw the radar
+		DrawRadar();
+	}
+
+	// main logic 
+	public void SetCenterObject( Transform aTransform )
+	{
+		centerObject = aTransform;
+	}
+
+	public void AddEnemyBlipToList( Transform transformToAdd )
+	{
+		// add transform and textures to arraylists
+		radarList.Add ( transformToAdd );
+
+		// for this, we will assume that we are adding an enemy and use the enemy blip
+		textureList.Add ( enemyBlipTexture );
+	}
+
+	public void RemoveEnemyBlip( Transform transformToRemove )
+	{
+		radarList.Remove( transformToRemove );	
+	}
+
+	private void SetUpRadar()
 	{
 		// set up arraylists to hold transforms and textures
 		radarList= new ArrayList();
 		textureList= new ArrayList();
-		
+
 		// Find all game objects with default tag on
-	    GameObject[] gos = GameObject.FindGameObjectsWithTag(defaultTagFilter); 
- 
-	    // Iterate through them
-	    foreach (GameObject go in gos)  
-	    {
+		GameObject[] gos = GameObject.FindGameObjectsWithTag(defaultTagFilter); 
+
+		// Iterate through them
+		foreach (GameObject go in gos)  
+		{
 			AddBlipToList(go.transform, enemyBlipTexture);
 		}
 	}
-	 
-	public void SetCenterObject( Transform aTransform )
-	{
-		centerObject= aTransform;
-	}
-	
-	public void AddBlipToList( Transform transformToAdd, Texture aBlip )
+
+	private void AddBlipToList( Transform transformToAdd, Texture aBlip )
 	{
 		// add transform and textures to arraylists
 		radarList.Add ( transformToAdd );
 		textureList.Add ( aBlip );
 	}
 	
-	// we also have an publically available method for adding blips so that we don't have to do a FindGameObjectsWithTag
-	// every time we add something new into the world. For 
-	public void AddEnemyBlipToList( Transform transformToAdd )
-	{
-		// add transform and textures to arraylists
-		radarList.Add ( transformToAdd );
-		
-		// for this, we will assume that we are adding an enemy and use the enemy blip
-		textureList.Add ( enemyBlipTexture );
-	}
-	
-	// we also provide a method for other scripts to remove blips 
-	public void RemoveEnemyBlip( Transform transformToRemove )
-	{
-		radarList.Remove( transformToRemove );	
-	}
-	
-	public void DrawRadar()
+	private void DrawRadar()
 	{
 		// calculate center position
 		CalcCenter();
@@ -111,15 +125,6 @@ public class RadarGUI : MonoBehaviour
 			// draw its blip on the radar
 			drawBlip( ( Transform ) radarList[i], ( Texture ) textureList[i] );
 		}
-	}
-	
-	void OnGUI() 
-	{
-		// transform the matrix to scale to different sized windows
-		//GUI.matrix = Matrix4x4.TRS ( Vector3.zero, Quaternion.identity, new Vector3( Screen.width / 1024f, Screen.height / 768f, 1 ));
-		
-		// draw the radar
-		DrawRadar();
 	}
 		
 	private void drawBlip ( Transform go, Texture aTexture )

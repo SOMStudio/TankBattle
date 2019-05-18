@@ -99,7 +99,7 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 
 	// main logic
 
-	public virtual void Init ()
+	public override void Init ()
 	{
 		base.Init ();
 		
@@ -124,107 +124,94 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 	
 	protected virtual void GetInput()
 	{
-		horz= Mathf.Clamp( default_input.GetHorizontal() , -1, 1 );
-	    vert= Mathf.Clamp( default_input.GetVertical() , -1, 1 );
+		horz = Mathf.Clamp (default_input.GetHorizontal (), -1, 1);
+		vert = Mathf.Clamp (default_input.GetVertical (), -1, 1);
 	}
 
 	void  UpdateSmoothedMovementDirection ()
 	{			
-		if(moveDirectionally)
-		{
-			UpdateDirectionalMovement();
+		if (moveDirectionally) {
+			UpdateDirectionalMovement ();
 		} else {
-			UpdateRotationMovement();
+			UpdateRotationMovement ();
 		}
 	}
 	
 	void UpdateDirectionalMovement()
 	{
 		// find target direction
-		targetDirection= horz * Vector3.right;
-		targetDirection+= vert * Vector3.forward;
+		targetDirection = horz * Vector3.right;
+		targetDirection += vert * Vector3.forward;
 		
 		// We store speed and direction seperately,
-		// so that when the character stands still we still have a valid forward direction
-		// moveDirection is always normalized, and we only update  it if there is user input.
-		if (targetDirection != Vector3.zero)
-		{
-				moveDirection = Vector3.RotateTowards(moveDirection, targetDirection, rotateSpeed * Mathf.Deg2Rad * Time.deltaTime, 1000);
-				moveDirection = moveDirection.normalized;
+		if (targetDirection != Vector3.zero) {
+			moveDirection = Vector3.RotateTowards (moveDirection, targetDirection, rotateSpeed * Mathf.Deg2Rad * Time.deltaTime, 1000);
+			moveDirection = moveDirection.normalized;
 		}
 		
 		// Smooth the speed based on the current target direction
-		curSmooth= speedSmoothing * Time.deltaTime;
+		curSmooth = speedSmoothing * Time.deltaTime;
 		
 		// Choose target speed
 		//* We want to support analog input but make sure you cant walk faster diagonally than just forward or sideways
-		targetSpeed= Mathf.Min(targetDirection.magnitude, 1.0f);
+		targetSpeed = Mathf.Min (targetDirection.magnitude, 1.0f);
 	
 		_characterState = CharacterState.Idle;
 		
 		// decide on animation state and adjust move speed
-		if (Time.time - runAfterSeconds > walkTimeStart)
-		{
+		if (Time.time - runAfterSeconds > walkTimeStart) {
 			targetSpeed *= runSpeed;
 			_characterState = CharacterState.Running;
-		}
-		else
-		{
+		} else {
 			targetSpeed *= walkSpeed;
 			_characterState = CharacterState.Walking;
 		}
 		
-		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, curSmooth);
+		moveSpeed = Mathf.Lerp (moveSpeed, targetSpeed, curSmooth);
 		
 		// Reset walk time start when we slow down
 		if (moveSpeed < walkSpeed * 0.3f)
 			walkTimeStart = Time.time;
 			
 		// Calculate actual motion
-		Vector3 movement= moveDirection * moveSpeed;
+		Vector3 movement = moveDirection * moveSpeed;
 		movement *= Time.deltaTime;
 		
 		// Move the controller
-		collisionFlags = controller.Move(movement);
+		collisionFlags = controller.Move (movement);
 		
 		// Set rotation to the move direction
-		myTransform.rotation = Quaternion.LookRotation(moveDirection);
+		myTransform.rotation = Quaternion.LookRotation (moveDirection);
 	}
 	
 	void UpdateRotationMovement ()
 	{
-		// this character movement is based on the code in the Unity help file for CharacterController.SimpleMove
-		// http://docs.unity3d.com/Documentation/ScriptReference/CharacterController.SimpleMove.html
-		
-        myTransform.Rotate(0, horz * rotateSpeed * Time.deltaTime, 0);
-        curSpeed = moveSpeed * vert;
-		controller.SimpleMove( myTransform.forward * curSpeed );
+		myTransform.Rotate (0, horz * rotateSpeed * Time.deltaTime, 0);
+		curSpeed = moveSpeed * vert;
+		controller.SimpleMove (myTransform.forward * curSpeed);
 
 		// Target direction (the max we want to move, used for calculating target speed)
-		targetDirection= vert * myTransform.forward;
+		targetDirection = vert * myTransform.forward;
 				
 		// Smooth the speed based on the current target direction
-		float curSmooth= speedSmoothing * Time.deltaTime;
+		float curSmooth = speedSmoothing * Time.deltaTime;
 		
 		// Choose target speed
 		//* We want to support analog input but make sure you cant walk faster diagonally than just forward or sideways
-		targetSpeed= Mathf.Min(targetDirection.magnitude, 1.0f);
+		targetSpeed = Mathf.Min (targetDirection.magnitude, 1.0f);
 	
 		_characterState = CharacterState.Idle;
 		
 		// decide on animation state and adjust move speed
-		if (Time.time - runAfterSeconds > walkTimeStart)
-		{
+		if (Time.time - runAfterSeconds > walkTimeStart) {
 			targetSpeed *= runSpeed;
 			_characterState = CharacterState.Running;
-		}
-		else
-		{
+		} else {
 			targetSpeed *= walkSpeed;
 			_characterState = CharacterState.Walking;
 		}
 		
-		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, curSmooth);
+		moveSpeed = Mathf.Lerp (moveSpeed, targetSpeed, curSmooth);
 		
 		// Reset walk time start when we slow down
 		if (moveSpeed < walkSpeed * 0.3f)
@@ -234,28 +221,24 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 	
 	void UpdateState ()
 	{	
-		if (!canControl)
-		{
+		if (!canControl) {
 			// kill all inputs if not controllable.
-			Input.ResetInputAxes();
+			Input.ResetInputAxes ();
 		}
 		
-		UpdateSmoothedMovementDirection();
+		UpdateSmoothedMovementDirection ();
 		
 		// ANIMATION sector
-		if(_animation) {
-			if(controller.velocity.sqrMagnitude < 0.1f) {
-				_animation.CrossFade(idleAnimation.name);
-			}
-			else 
-			{
-				if(_characterState == CharacterState.Running) {
-					_animation[walkAnimation.name].speed = Mathf.Clamp(controller.velocity.magnitude, 0.0f, runMaxAnimationSpeed);
-					_animation.CrossFade(walkAnimation.name);	
-				}
-				else if(_characterState == CharacterState.Walking) {
-					_animation[walkAnimation.name].speed = Mathf.Clamp(controller.velocity.magnitude, 0.0f, walkMaxAnimationSpeed);
-					_animation.CrossFade(walkAnimation.name);	
+		if (_animation) {
+			if (controller.velocity.sqrMagnitude < 0.1f) {
+				_animation.CrossFade (idleAnimation.name);
+			} else {
+				if (_characterState == CharacterState.Running) {
+					_animation [walkAnimation.name].speed = Mathf.Clamp (controller.velocity.magnitude, 0.0f, runMaxAnimationSpeed);
+					_animation.CrossFade (walkAnimation.name);	
+				} else if (_characterState == CharacterState.Walking) {
+					_animation [walkAnimation.name].speed = Mathf.Clamp (controller.velocity.magnitude, 0.0f, walkMaxAnimationSpeed);
+					_animation.CrossFade (walkAnimation.name);	
 				}
 			}
 		}	

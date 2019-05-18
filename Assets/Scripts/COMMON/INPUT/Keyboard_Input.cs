@@ -5,7 +5,6 @@ using UnityEngine;
 public class Keyboard_Input : BaseInputController {
 
 	// main events
-
 	void LateUpdate()
 	{
 		// check inputs each LateUpdate() ready for the next tick
@@ -13,7 +12,6 @@ public class Keyboard_Input : BaseInputController {
 	}
 
 	// main logic
-
 	protected override void CheckInput ()
 	{	
 		// get input data from vertical and horizontal axis

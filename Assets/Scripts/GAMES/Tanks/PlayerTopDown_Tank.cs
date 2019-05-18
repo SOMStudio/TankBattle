@@ -1,89 +1,117 @@
 using UnityEngine;
 using System.Collections;
 
-[AddComponentMenu("Sample Game Glue Code/Laser Blast Survival/Top Down Player Controller")]
-
 public class PlayerTopDown_Tank : BaseTopDown
 {
 	private bool isInvulnerable;
 	private bool isRespawning;
-	
-	public PlayerManager_Tank myPlayerManager;
-	public UserManager_Tank myDataManager;
 
-	public bool godMode =false;
-	public GameObject theMeshGO;
+	[Header("Managers")]
+	[SerializeField]
+	private PlayerManager_Tank myPlayerManager;
+	[SerializeField]
+	private UserManager_Tank myDataManager;
+
+	private bool godMode = false;
+
+	[Header("Mesh")]
+	[SerializeField]
+	private GameObject theMeshGO;
+
+	[Header("Weapon")]
+	[SerializeField]
+	private Standard_SlotWeaponController weaponControl;
+	[SerializeField]
+	private bool canFire;
 	
-	public Standard_SlotWeaponController weaponControl;
-	public bool canFire;
-	
-	public bool isFinished;
-	
+	[SerializeField]
+	private bool isFinished;
+
+	// main event
+	void OnCollisionEnter(Collision collider)
+	{
+		// when something collides with our ship, we check its layer to see if it is on 11
+		if (collider.gameObject.layer == 10 && !isRespawning && !isInvulnerable) {
+			ArmedEnemy_Tank enemyManager = collider.gameObject.GetComponent<ArmedEnemy_Tank> ();
+			if (enemyManager) {
+				float reduceHels = myDataManager.GetProtection () * enemyManager.GetContactDamage ();
+
+				ReduceLife (reduceHels);
+			}
+		}
+	}
+
+	// main logic
 	public override void Init ()
 	{
-		base.Init();
+		base.Init ();
 		
 		// do god mode, if needed)
-		if(!godMode)
-		{
-			MakeVulnerable();
+		if (!godMode) {
+			MakeVulnerable ();
 		} else {
-			MakeInvulnerable();
+			MakeInvulnerable ();
 		}
 		
 		// start out with no control from the player
-		canControl=false;
+		canControl = false;
 		
 		// get a ref to the weapon controller
-		weaponControl= myGO.GetComponent<Standard_SlotWeaponController>();
+		weaponControl = myGO.GetComponent<Standard_SlotWeaponController> ();
 		
 		// if a player manager is not set in the editor, let's try to find one
-		if(myPlayerManager==null)
-			myPlayerManager= myGO.GetComponent<PlayerManager_Tank>();
+		if (myPlayerManager == null)
+			myPlayerManager = myGO.GetComponent<PlayerManager_Tank> ();
 		
 		// set up the data for our player
-		myDataManager= myPlayerManager.DataManager_Tank;
+		myDataManager = myPlayerManager.DataManager_Tank;
 		myDataManager.SetName ("Player");
 		myDataManager.SetHealth (3);
 		myDataManager.SetDetaleHealth (100);
 		myDataManager.SetProtection (0.5f);
 		
-		isFinished= false;
+		isFinished = false;
 		
 		// get a ref to the player manager
-		GameController_Tank.Instance.UpdateLivesP1(myDataManager.GetHealth());
-		GameController_Tank.Instance.UpdateLivesDetaleP1(myDataManager.GetDetaleHealth());
+		GameController_Tank.Instance.UpdateLivesP1 (myDataManager.GetHealth ());
+		GameController_Tank.Instance.UpdateLivesDetaleP1 (myDataManager.GetDetaleHealth ());
 	}
 	
 	protected override void GetInput()
 	{
-		if(isFinished || isRespawning)
-		{
-			horz=0;
-			vert=0;
+		if (isFinished || isRespawning) {
+			horz = 0;
+			vert = 0;
 			return;
 		}
 		
 		// drop out if we're not supposed to be controlling this player
-		if(!canControl)
+		if (!canControl)
 			return;
 		
 		// grab inputs from the default input provider
-		horz= Mathf.Clamp( default_input.GetHorizontal() , -1, 1 );
-	    vert= Mathf.Clamp( default_input.GetVertical() , -1, 1 );
+		horz = Mathf.Clamp (default_input.GetHorizontal (), -1, 1);
+		vert = Mathf.Clamp (default_input.GetVertical (), -1, 1);
 		
 		// fire if we need to
-		if( default_input.GetFire() && canFire )
-		{
+		if (default_input.GetFire () && canFire) {
 			// tell weapon controller to deal with firing
-			weaponControl.Fire();
+			weaponControl.Fire ();
 		}
 	}
 	
 	public void GameStart()
 	{
 		// this function is called by the game controller to tell us when we can start moving
-		canControl=true;
+		canControl = true;
+	}
+
+	public void PlayerFinished()
+	{
+		// tell the player controller that we have finished
+		GameController_Tank.Instance.PlayerDied (id);
+
+		isFinished = true;
 	}
 
 	void ReduceLife(float val) {
@@ -102,19 +130,18 @@ public class PlayerTopDown_Tank : BaseTopDown
 
 	void LostLife()
 	{
-		isRespawning=true;
+		isRespawning = true;
 				
 		// blow us up!
-		GameController_Tank.Instance.PlayerHit( myTransform );
+		GameController_Tank.Instance.PlayerHit (myTransform);
 			
 		// reduce lives by one
 		myDataManager.ReduceHealth (1);
 		
 		// as our ID is 1, we must be player 1
-		GameController_Tank.Instance.UpdateLivesP1( myDataManager.GetHealth() );
+		GameController_Tank.Instance.UpdateLivesP1 (myDataManager.GetHealth ());
 		
-		if(myDataManager.GetHealth()<1) // <- game over
-		{
+		if (myDataManager.GetHealth () < 1) { // <- game over
 			// stop movement, as long as rigidbody is not kinematic (otherwise it will have no velocity and we
 			// will generate an error message trying to set it)
 			if (myBody != null) {
@@ -123,81 +150,59 @@ public class PlayerTopDown_Tank : BaseTopDown
 			}
 			
 			// hide ship body
-			theMeshGO.SetActive(false);
+			theMeshGO.SetActive (false);
 			
 			// disable and hide weapon
-			weaponControl.DisableCurrentWeapon();
+			weaponControl.DisableCurrentWeapon ();
 			
 			// do anything we need to do at game finished
-			PlayerFinished();
+			PlayerFinished ();
 		} else {
 			// hide ship body
-			theMeshGO.SetActive(false);
+			theMeshGO.SetActive (false);
 			
 			// disable and hide weapon
-			weaponControl.DisableCurrentWeapon();
+			weaponControl.DisableCurrentWeapon ();
 					
 			// respawn 
-			Invoke("Respawn",2f);
+			Invoke ("Respawn", 2f);
 		}
 	}
 	
 	void Respawn()
 	{
 		// reset the 'we are respawning' variable
-		isRespawning= false;
+		isRespawning = false;
 		
 		// we need to be invulnerable for a little while
-		MakeInvulnerable();
+		MakeInvulnerable ();
 		
-		Invoke ("MakeVulnerable",3);
+		Invoke ("MakeVulnerable", 3);
 
 		//set detale helth
 		myDataManager.SetDetaleHealth (100);
-		GameController_Tank.Instance.UpdateLivesDetaleP1(myDataManager.GetDetaleHealth());
+		GameController_Tank.Instance.UpdateLivesDetaleP1 (myDataManager.GetDetaleHealth ());
 
 		// show ship body again
-		theMeshGO.SetActive(true);
+		theMeshGO.SetActive (true);
 		
 		// revert to the first weapon
-		weaponControl.SetWeaponSlot(0);
+		weaponControl.SetWeaponSlot (0);
 		
 		// show the current weapon (since it was hidden when the ship explosion was shown)
-		weaponControl.EnableCurrentWeapon();
-	}
-	
-	void OnCollisionEnter(Collision collider)
-	{
-		// when something collides with our ship, we check its layer to see if it is on 11
-		if(collider.gameObject.layer==10 && !isRespawning && !isInvulnerable)
-		{
-			ArmedEnemy_Tank enemyManager = collider.gameObject.GetComponent<ArmedEnemy_Tank> ();
-			if (enemyManager) {
-				float reduceHels = myDataManager.GetProtection () * enemyManager.GetContactDamage ();
-
-				ReduceLife (reduceHels);
-			}
-		}
+		weaponControl.EnableCurrentWeapon ();
 	}
 	
 	void MakeInvulnerable()
 	{
-		isInvulnerable=true;
+		isInvulnerable = true;
 		//shieldMesh.SetActive(true);
 	}
 	
 	void MakeVulnerable()
 	{
-		isInvulnerable=false;
+		isInvulnerable = false;
 		//shieldMesh.SetActive(false);
-	}
-	
-	public void PlayerFinished()
-	{
-		// tell the player controller that we have finished
-		GameController_Tank.Instance.PlayerDied( id );
-		
-		isFinished=true;
 	}
 	
 }

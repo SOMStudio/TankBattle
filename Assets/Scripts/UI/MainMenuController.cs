@@ -51,9 +51,9 @@ public class MainMenuController : MonoBehaviour
 	[SerializeField]
 	private bool isLoading;
 
+	[Header("Sound/Music")]
 	[SerializeField]
 	private BaseSoundController soundManager;
-
 	[SerializeField]
 	private BaseMusicController musicManager;
 
@@ -97,14 +97,16 @@ public class MainMenuController : MonoBehaviour
 		if (soundManager == null) {
 			soundManager = BaseSoundController.Instance;
 
-			soundManager.UpdateVolume ();
+			if (soundManager)
+				soundManager.UpdateVolume ();
 		}
 
 		// music manager
 		if (musicManager == null) {
 			musicManager = BaseMusicController.Instance;
 
-			musicManager.UpdateVolume ();
+			if (musicManager)
+				musicManager.UpdateVolume ();
 		}
 
 	}

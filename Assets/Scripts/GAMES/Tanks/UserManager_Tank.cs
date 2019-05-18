@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class UserManager_Tank : BaseUserManager {
 
-	// add property
-	public float detaleHelth;
-	public float protection;
+	[SerializeField]
+	private float detaleHelth;
+	[SerializeField]
+	private float protection;
 
+	// main logic
 	public override void GetDefaultData()
 	{
 		base.GetDefaultData ();
@@ -24,17 +26,17 @@ public class UserManager_Tank : BaseUserManager {
 
 	public void AddProtection(float num)
 	{
-		protection+=num;
+		protection += num;
 	}
 
 	public void ReduceProtection(float num)
 	{
-		protection-=num;
+		protection -= num;
 	}
 
 	public void SetProtection(float num)
 	{
-		protection=num;
+		protection = num;
 	}
 
 	//detale helth
@@ -45,16 +47,16 @@ public class UserManager_Tank : BaseUserManager {
 
 	public void AddDetaleHealth(float num)
 	{
-		detaleHelth+=num;
+		detaleHelth += num;
 	}
 
 	public void ReduceDetaleHealth(float num)
 	{
-		detaleHelth-=num;
+		detaleHelth -= num;
 	}
 
 	public void SetDetaleHealth(float num)
 	{
-		detaleHelth=num;
+		detaleHelth = num;
 	}
 }

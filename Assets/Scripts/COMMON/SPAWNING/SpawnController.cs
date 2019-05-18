@@ -14,11 +14,10 @@ public class SpawnController : ScriptableObject
 	private GameObject[] playerPrefabList;
 	private Vector3[] startPositions;
 	private Quaternion[] startRotations;
-	
-	// singleton structure based on AngryAnt's fantastic wiki entry over at http://wiki.unity3d.com/index.php/Singleton
-	
+
 	private static SpawnController instance;
  
+	// main logic
 	public SpawnController () 
 	{
 		// this function will be called whenever an instance of the SpawnController class is made
