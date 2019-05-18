@@ -12,7 +12,6 @@ public class Waypoints_Controller : MonoBehaviour {
 
 	// this script simply gives us a visual path to make it easier to edit
 	// our waypoints
-	private ArrayList transforms; // arraylist for easy access to transforms
 	private Vector3 firstPoint; // store our first waypoint so we can loop the path
 	private float distance; // used to calculate distance between points
 	private Transform TEMPtrans; // a temporary holder for a transform
@@ -26,7 +25,8 @@ public class Waypoints_Controller : MonoBehaviour {
 	private Vector3 currentPos;
 	private Vector3 lastPos;
 	private Transform pointT;
-	
+
+	public Transform[] transforms; // arraylist for easy access to transforms
 	public bool closed=true;
 	public bool shouldReverse;
 	
@@ -113,17 +113,17 @@ public class Waypoints_Controller : MonoBehaviour {
 		// we store all of the waypoints transforms in an ArrayList,
 		// which is initialised here (we always need to do this before we can
 		// use ArrayLists)
-		transforms=new ArrayList();
+		//transforms=new ArrayList();
 		
 		// now we go through any transforms 'under' this transform, so all of
 		// the child objects that act as our waypoints get put into our arraylist
-		foreach(Transform t in transform)
-		{
-			// add this transform to our arraylist
-			transforms.Add(t);
-		}
+		//foreach(Transform t in transform)
+		//{
+		//	// add this transform to our arraylist
+		//	transforms.Add(t);
+		//}
 		
-		totalTransforms=(int)transforms.Count;
+		totalTransforms = transforms.Length;
 	}
 	
 	public void SetReverseMode(bool rev)
@@ -133,51 +133,54 @@ public class Waypoints_Controller : MonoBehaviour {
 	
 	public int FindNearestWaypoint ( Vector3 fromPos, float maxRange)
 	{
-			// make sure that we have populated the transforms list, if not, populate it
-			if(transforms==null)
-				GetTransforms();
+		// make sure that we have populated the transforms list, if not, populate it
+		if(transforms==null)
+			GetTransforms();
+
+		if (totalTransforms == 0)
+			GetTransforms ();
 				
-			// the distance variable is just used to hold the 'current' distance when
-			// we are comparing, so that we can find the closest
-			distance = Mathf.Infinity;
-			
-			// Iterate through them and find the closest one
-			for(int i = 0; i < transforms.Count; i++)
-			{
-				// grab a reference to a transform
-				TEMPtrans = (Transform)transforms[i];
-				
-				// calculate the distance between the current transform and the passed in transform's position vector
-				diff = (TEMPtrans.position - fromPos);
-				curDistance = diff.sqrMagnitude;
+		// the distance variable is just used to hold the 'current' distance when
+		// we are comparing, so that we can find the closest
+		distance = Mathf.Infinity;
 		
-				// now compare distances - making sure that we are not 
-				if ( curDistance < distance ) 
+		// Iterate through them and find the closest one
+		for(int i = 0; i < transforms.Length; i++)
+		{
+			// grab a reference to a transform
+			TEMPtrans = (Transform)transforms[i];
+			
+			// calculate the distance between the current transform and the passed in transform's position vector
+			diff = (TEMPtrans.position - fromPos);
+			curDistance = diff.sqrMagnitude;
+	
+			// now compare distances - making sure that we are not 
+			if ( curDistance < distance ) 
+			{
+				if( Mathf.Abs( TEMPtrans.position.y - fromPos.y ) < maxRange )
 				{
-					if( Mathf.Abs( TEMPtrans.position.y - fromPos.y ) < maxRange )
-					{
-						
-						// set our current 'winner' (closest transform) to the transform we just found
-						closest = TEMPtrans;
-						
-						// store the index of this waypoint
-						TEMPindex=i;
-						
-						// set our 'winning' distance to the distance we just found
-						distance = curDistance;
-					}
+					
+					// set our current 'winner' (closest transform) to the transform we just found
+					closest = TEMPtrans;
+					
+					// store the index of this waypoint
+					TEMPindex=i;
+					
+					// set our 'winning' distance to the distance we just found
+					distance = curDistance;
 				}
 			}
-	
-			// now we make sure that we did actually find something, then return it
-			if(closest)
-			{
-				// return the waypoint we found in this test
-				return TEMPindex;
-			} else {
-				// no waypoint was found, so return -1 (this should be acccounted for at the other end!)
-				return -1;
-			}
+		}
+
+		// now we make sure that we did actually find something, then return it
+		if(closest)
+		{
+			// return the waypoint we found in this test
+			return TEMPindex;
+		} else {
+			// no waypoint was found, so return -1 (this should be acccounted for at the other end!)
+			return -1;
+		}
 	}
 	
 	// this function has the addition of a check to avoid finding the same transform as one passed in. we use
@@ -186,55 +189,61 @@ public class Waypoints_Controller : MonoBehaviour {
 	
 	public int FindNearestWaypoint ( Vector3 fromPos , Transform exceptThis, float maxRange) 
 	{		
-			// make sure that we have populated the transforms list, if not, populate it
-			if(transforms==null)
-				GetTransforms();
+		// make sure that we have populated the transforms list, if not, populate it
+		if(transforms==null)
+			GetTransforms();
+
+		if (totalTransforms == 0)
+			GetTransforms ();
 			
-			// the distance variable is just used to hold the 'current' distance when
-			// we are comparing, so that we can find the closest
-			distance = Mathf.Infinity;
-			
-			// Iterate through them and find the closest one
-			for(int i = 0; i < totalTransforms; i++)
-			{
-				// grab a reference to a transform
-				TEMPtrans = (Transform)transforms[i];
-				
-				// calculate the distance between the current transform and the passed in transform's position vector
-				diff = (TEMPtrans.position - fromPos);
-				curDistance = diff.sqrMagnitude;
+		// the distance variable is just used to hold the 'current' distance when
+		// we are comparing, so that we can find the closest
+		distance = Mathf.Infinity;
 		
-				// now compare distances - making sure that we are not 
-				if ( curDistance < distance && TEMPtrans != exceptThis ) 
+		// Iterate through them and find the closest one
+		for(int i = 0; i < totalTransforms; i++)
+		{
+			// grab a reference to a transform
+			TEMPtrans = (Transform)transforms[i];
+			
+			// calculate the distance between the current transform and the passed in transform's position vector
+			diff = (TEMPtrans.position - fromPos);
+			curDistance = diff.sqrMagnitude;
+	
+			// now compare distances - making sure that we are not 
+			if ( curDistance < distance && TEMPtrans != exceptThis ) 
+			{
+				if( Mathf.Abs( TEMPtrans.position.y - fromPos.y ) < maxRange )
 				{
-					if( Mathf.Abs( TEMPtrans.position.y - fromPos.y ) < maxRange )
-					{
-						
-						// set our current 'winner' (closest transform) to the transform we just found
-						closest = TEMPtrans;
-						
-						// store the index of this waypoint
-						TEMPindex=i;
-						
-						// set our 'winning' distance to the distance we just found
-						distance = curDistance;
-					}
+					
+					// set our current 'winner' (closest transform) to the transform we just found
+					closest = TEMPtrans;
+					
+					// store the index of this waypoint
+					TEMPindex=i;
+					
+					// set our 'winning' distance to the distance we just found
+					distance = curDistance;
 				}
 			}
-	
-			// now we make sure that we did actually find something, then return it
-			if(closest)
-			{
-				// return the waypoint we found in this test
-				return TEMPindex;
-			} else {
-				// no waypoint was found, so return -1 (this should be acccounted for at the other end!)
-				return -1;
-			}
+		}
+
+		// now we make sure that we did actually find something, then return it
+		if(closest)
+		{
+			// return the waypoint we found in this test
+			return TEMPindex;
+		} else {
+			// no waypoint was found, so return -1 (this should be acccounted for at the other end!)
+			return -1;
+		}
 	}
 	
 	public Transform GetWaypoint(int index)
 	{
+		if (totalTransforms == 0)
+			GetTransforms ();
+
 		if( shouldReverse )
 		{
 			// send back the reverse index'd waypoint
@@ -253,11 +262,14 @@ public class Waypoints_Controller : MonoBehaviour {
 		if(index>totalTransforms-1)
 			return null;
 			
-		return (Transform)transforms[index];
+		return transforms[index];
 	}
 	
 	public int GetTotal()
 	{
+		if (totalTransforms == 0)
+			GetTransforms ();
+
 		return totalTransforms;
 	}
 		

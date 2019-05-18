@@ -6,7 +6,7 @@ using System.Collections;
 public class Standard_SlotWeaponController : BaseWeaponController {
 	
 	public bool allowWeaponSwitchKeys= true;
-
+	
 	public void Update()
 	{
 		if(!allowWeaponSwitchKeys)
@@ -58,16 +58,7 @@ public class Standard_SlotWeaponController : BaseWeaponController {
 		if(Input.GetKey("9"))
 		{
 			SetWeaponSlot(8);
-		}
-
-		if(Input.GetKeyUp("q"))
-		{
-			PrevWeaponSlot (false);
-		}
-		if(Input.GetKeyUp("w"))
-		{
-			NextWeaponSlot (false);
-		}
+		}	
 	}
 	
 }

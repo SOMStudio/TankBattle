@@ -1,144 +1,132 @@
 using UnityEngine;
 using System.Collections;
+using CharacterStates;
 
 [AddComponentMenu("Base/Character/Third Person")]
 
 public class BaseTopDown : ExtendedCustomMonoBehaviour 
 {
-	public AnimationClip idleAnimation;
-	public AnimationClip walkAnimation;
+	[Header("Main value")]
+	[SerializeField]
+	private float walkSpeed= 2.0f; // The speed when walking
+	[SerializeField]
+	private float runSpeed= 4.0f; // after runAfterSeconds of walking we run with runSpeed
+	[SerializeField]
+	private float speedSmoothing= 10.0f;
+	[SerializeField]
+	private float rotateSpeed= 500.0f;
+	[SerializeField]
+	private float runAfterSeconds= 3.0f;
+	[SerializeField]
+	private bool moveDirectionally;
 
-	public float walkMaxAnimationSpeed = 0.75f;
-	public float runMaxAnimationSpeed = 1.0f;
+	[Header("Animation")]
+	[SerializeField]
+	protected AnimationClip idleAnimation;
+	[SerializeField]
+	protected AnimationClip walkAnimation;
+	[SerializeField]
+	protected float walkMaxAnimationSpeed = 0.75f;
+	[SerializeField]
+	protected float runMaxAnimationSpeed = 1.0f;
+	[SerializeField]
+	protected float walkTimeStart= 0.0f;
+	[SerializeField]
+	protected Animation _animation;
 
-	// When did the user start walking (Used for going into run after a while)
-	private float walkTimeStart= 0.0f;
-	
-	// we've made the following variable public so that we can use an animation on a different gameObject if needed
-	public Animation _animation;
-	
-	enum CharacterState {
-		Idle = 0,
-		Walking = 1,
-		Running = 2,
-	}
-	
 	private CharacterState _characterState;
-
-	// The speed when walking
-	public float walkSpeed= 2.0f;
-	
-	// after runAfterSeconds of walking we run with runSpeed
-	public float runSpeed= 4.0f;
-
-	public float speedSmoothing= 10.0f;
-	public float rotateSpeed= 500.0f;
-	public float runAfterSeconds= 3.0f;
-	
 	// The current move direction in x-z
 	private Vector3 moveDirection= Vector3.zero;
-	
-	// The current vertical speed
-	private float verticalSpeed= 0.0f;
-	
 	// The current x-z move speed
-	public float moveSpeed= 0.0f;
+	private float moveSpeed= 0.0f;
+
+	[Header("Player Manager")]
+	[SerializeField]
+	protected BasePlayerManager myPlayerController; 
+	protected Keyboard_Input default_input;
 	
 	// The last collision flags returned from controller.Move
 	private CollisionFlags collisionFlags;
-			
-	public BasePlayerManager myPlayerController; 
-
-	[System.NonSerialized]
-	public Keyboard_Input default_input;
 	
 	public float horz;
 	public float vert;
 	
 	private CharacterController controller;
-	
-	// -------------------------------------------------------------------------
-			
-	void  Awake ()
-	{
-		// we need to do this before anything happens to the script or object, so it happens in Awake.
-		// if you need to add specific set up, consider adding it to the Init() function instead to keep this
-		// function limited only to things we need to do before anything else happens.
-		
-		moveDirection = transform.TransformDirection(Vector3.forward);
-		
-		// if _animation has not been set up in the inspector, we'll try to find it on the current gameobject
-		if(_animation==null)
-			_animation = GetComponent<Animation>();
-		
-		if(!_animation)
-			Debug.Log("The character you would like to control doesn't have animations. Moving her might look weird.");
-		
-		if(!idleAnimation) {
-			_animation = null;
-			Debug.Log("No idle animation found. Turning off animations.");
-		}
-		if(!walkAnimation) {
-			_animation = null;
-			Debug.Log("No walk animation found. Turning off animations.");
-		}
 
-		controller = GetComponent<CharacterController>();
-	}
-	
-	public virtual void Start ()
-	{
-		Init ();	
-	}
-	
-	public virtual void Init ()
-	{
-		// cache the usual suspects
-		myBody= GetComponent<Rigidbody>();
-		myGO= gameObject;
-		myTransform= transform;
-		
-		// add default keyboard input
-		if (default_input == null)
-			default_input = myGO.GetComponent<Keyboard_Input> ();
-		if (default_input == null)
-			default_input = myGO.AddComponent<Keyboard_Input> ();
-		
-		// cache a reference to the player controller
-		if (myPlayerController == null)
-			myPlayerController = myGO.GetComponent<BasePlayerManager> ();
-		if (myPlayerController == null)
-			myPlayerController = myGO.AddComponent<BasePlayerManager> ();
-		if (myPlayerController != null)
-			myPlayerController.Init ();
-	}
-	
-	public void SetUserInput( bool setInput )
-	{
-		canControl= setInput;	
-	}
-	
-	public virtual void GetInput()
-	{
-		horz= Mathf.Clamp( default_input.GetHorizontal() , -1, 1 );
-	    vert= Mathf.Clamp( default_input.GetVertical() , -1, 1 );
-	}
-	
-	public virtual void LateUpdate()
-	{
-		// we check for input in LateUpdate because Unity recommends this
-		if(canControl)
-			GetInput();
-	}
-	
-	public bool moveDirectionally;
-	
 	private Vector3 targetDirection;
 	private float curSmooth;
 	private float targetSpeed;
 	private float curSpeed;
 	private Vector3 forward;
 	private Vector3 right;
+
+	// main event
+			
+	void Awake ()
+	{
+		moveDirection = transform.TransformDirection (Vector3.forward);
+		
+		// if _animation has not been set up in the inspector, we'll try to find it on the current gameobject
+		if (_animation == null)
+			_animation = GetComponent<Animation> ();
+		
+		if (!_animation)
+			Debug.Log ("The character you would like to control doesn't have animations. Moving her might look weird.");
+		
+		if (!idleAnimation) {
+			_animation = null;
+			Debug.Log ("No idle animation found. Turning off animations.");
+		}
+		if (!walkAnimation) {
+			_animation = null;
+			Debug.Log ("No walk animation found. Turning off animations.");
+		}
+
+		controller = GetComponent<CharacterController> ();
+	}
+
+	void Update ()
+	{	
+		UpdateState ();
+	}
+
+	void LateUpdate()
+	{
+		// we check for input in LateUpdate because Unity recommends this
+		if (canControl)
+			GetInput ();
+	}
+
+	// main logic
+
+	public virtual void Init ()
+	{
+		base.Init ();
+		
+		// add default keyboard input
+		if (!default_input) {
+			default_input = myGO.AddComponent<Keyboard_Input> ();
+		}
+		
+		// cache a reference to the player controller
+		if (!myPlayerController) {
+			myPlayerController = myGO.GetComponent<BasePlayerManager> ();
+		}
+		
+		if(myPlayerController!=null)
+			myPlayerController.Init();
+	}
+	
+	public void SetUserInput( bool setInput )
+	{
+		canControl = setInput;	
+	}
+	
+	protected virtual void GetInput()
+	{
+		horz= Mathf.Clamp( default_input.GetHorizontal() , -1, 1 );
+	    vert= Mathf.Clamp( default_input.GetVertical() , -1, 1 );
+	}
 
 	void  UpdateSmoothedMovementDirection ()
 	{			
@@ -244,7 +232,7 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 		
 	}
 	
-	void Update ()
+	void UpdateState ()
 	{	
 		if (!canControl)
 		{

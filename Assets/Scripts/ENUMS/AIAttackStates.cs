@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace AIAttackStates
 {
 	public enum AIAttackState
@@ -8,5 +6,4 @@ namespace AIAttackStates
 		look_and_destroy,
 		no_attack,
 	}
-	
 }

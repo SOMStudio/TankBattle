@@ -11,8 +11,8 @@ public class SimpleBotMover : MonoBehaviour
 	public float moveSpeed= 0.5f;
 	
 	public Vector3 centerOfGravity;
-
-	public Transform myTransform;
+	
+	private Transform myTransform;
 	
 	void Start ()
 	{
@@ -20,33 +20,24 @@ public class SimpleBotMover : MonoBehaviour
 		myTransform= transform;
 		
 		// if it hasn't been set in the editor, let's try and find it on this transform
-		if(AIController==null)
-			AIController= myTransform.GetComponent<BaseAIController>();
+		if (!AIController) {
+			AIController = myTransform.GetComponent<BaseAIController> ();
+		}
 		
 		// set center of gravity
-		if(myBody!=null)
-		{
-			myBody.centerOfMass= centerOfGravity;
+		if (!myBody) {
+			myBody.centerOfMass = centerOfGravity;
 		}
 	}
 	
-	void Update () 
+	void Update ()
 	{
 		// turn the transform, if required
-		if (myTransform != null) {
-			if (AIController.horz != 0) {
-				myTransform.Rotate (new Vector3 (0, Time.deltaTime * AIController.horz * turnSpeed, 0));
-			}
-		}
+		myTransform.Rotate (new Vector3 (0, Time.deltaTime * AIController.horz * turnSpeed, 0));
 		
 		// if we have a rigidbody, move it if required
-		if(myBody!=null)
-		{
-			if (AIController.vert != 0) {
-				myBody.AddForce ((myTransform.forward * moveSpeed * Time.deltaTime) * AIController.vert, ForceMode.VelocityChange);
-			}
+		if (myBody != null) {
+			myBody.AddForce ((myTransform.forward * moveSpeed * Time.deltaTime) * AIController.vert, ForceMode.VelocityChange);
 		}
-		
-		
 	}
 }

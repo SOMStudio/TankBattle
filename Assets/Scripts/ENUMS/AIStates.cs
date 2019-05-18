@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace AIStates
 {
 	public enum AIState
@@ -15,5 +13,4 @@ namespace AIStates
 		steer_to_waypoint,
 		steer_to_target,
 	}
-	
 }

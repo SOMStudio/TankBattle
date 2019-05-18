@@ -114,7 +114,8 @@ public class BaseWeaponScript : MonoBehaviour
 		theProjectile.LookAt( theProjectile.position + fireDirection );
 	
 		// add some force to move our projectile
-		theProjectile.GetComponent<Rigidbody>().velocity= fireDirection * projectileSpeed;
+		Rigidbody rb= theProjectile.GetComponent<Rigidbody> ();
+		rb.velocity= fireDirection * projectileSpeed;
 	}
 	
 	public virtual Transform MakeProjectile( int ownerID )

@@ -6,50 +6,56 @@ using AIAttackStates;
 
 public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 {
-	[System.NonSerialized]
-	public bool doFire;
-	
-	public int pointsValue = 50;
-	public int thisEnemyStrength = 1;
+	[Header("Main value")]
+	[SerializeField]
+	protected int pointsValue = 50;
+	[SerializeField]
+	private int thisEnemyStrength = 1;
+	[SerializeField]
+	private GameObject mesh_parentGO;
 
-	public bool thisGameObjectShouldFire;
-	public bool onlyFireWhenOnscreen;
-	
 	// we use a renderer to test whether or not the ship is on screen
-	public Renderer rendererToTestAgainst;
+	protected Renderer rendererToTestAgainst;
 
-	public Standard_SlotWeaponController weaponControl;
-	public GameObject mesh_parentGO;
+	[Header("Fire value")]
+	[SerializeField]
+	protected Standard_SlotWeaponController weaponControl;
+	[SerializeField]
+	protected AIAttackState currentState = AIAttackState.random_fire; // default action is to attack nothing
+	[SerializeField]
+	private bool thisGameObjectShouldFire;
+	[SerializeField]
+	private bool onlyFireWhenOnscreen;
+	[SerializeField]
+	private float fireDelayTime = 1f;
+	[SerializeField]
+	protected string tagOfTargetsToShootAt;
+
+	[Header("Player Manager")]
+	[SerializeField]
+	protected BasePlayerManager myPlayerManager;
+	[SerializeField]
+	protected BaseUserManager myDataManager;
+	[SerializeField]
+	protected bool isBoss = false;
 	
+	protected int tempINT;
+
+	private RaycastHit rayHit;
+	private bool doFire;
 	private bool canFire;
-	
-	public float fireDelayTime = 1f;
-	
-	public BasePlayerManager myPlayerManager;
-	public BaseUserManager myDataManager;
-	
-	public bool isBoss= false;
-	
-	public int tempINT;
-	
-	// default action is to attack nothing
-	public AIAttackState currentState= AIAttackState.random_fire;
-	
-	public string tagOfTargetsToShootAt;
-	
-	public void Start ()
-	{
-		// now call our script-specific init function
-		Init ();
+
+	// main event
+	void Update() {
+		UpdateState ();
 	}
-	
-	public virtual void Init()
+
+	// main logic
+	public override void Init()
 	{
-		// cache our transform
-		myTransform = transform;
-		
-		// cache our gameObject
-		myGO = gameObject;
+		base.Init ();
+
+		didInit = false;
 		
 		if (weaponControl == null) {
 			// try to find weapon controller on this gameobject
@@ -57,39 +63,33 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 		}
 		
 		if (rendererToTestAgainst == null) {
-			// we need a renderer to find out whether or not we are on-screen, so let's try and find one
-			// in our children if we don't already have one set in the editor
+			// we need a renderer to find out whether or not we are on-screen
 			rendererToTestAgainst = myGO.GetComponentInChildren<Renderer> ();
 		}
 				
 		// if a player manager is not set in the editor, let's try to find one
 		if (myPlayerManager == null) {
-			myPlayerManager = myGO.GetComponent<BasePlayerManager> ();
-
-			if (myPlayerManager == null) {
-				myPlayerManager = myGO.AddComponent<BasePlayerManager> ();
-			}
+			myPlayerManager = myGO.AddComponent<BasePlayerManager> ();
 		}
 		
-		myDataManager = myPlayerManager.DataManager;
-		myDataManager.SetName ("Enemy");
-		myDataManager.SetHealth (thisEnemyStrength);
+		myDataManager = myPlayerManager.GetDataManager ();
+		myDataManager.SetName("Enemy");
+		myDataManager.SetHealth(thisEnemyStrength);
 
-		canFire = true;
-		didInit = true;
+		canFire=true;
+		didInit=true;
 	}
 	
-	private RaycastHit rayHit;
-	
-	public virtual void Update ()
+	protected virtual void UpdateState ()
 	{
 		// if we are not allowed to control the weapon, we drop out here
 		if(!canControl)
 			return;
 		
-		if (thisGameObjectShouldFire) {
+		if(thisGameObjectShouldFire)
+		{
 			// we use doFire to determine whether or not to fire right now
-			doFire = false;
+			doFire=false;
 			
 			// canFire is used to control a delay between firing
 			if (canFire) {
@@ -106,7 +106,6 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 							doFire = true;
 						}
 					}
-		
 				} else {
 					// if we're not set to random fire or look and destroy, just fire whenever we can
 					doFire = true;	
@@ -129,13 +128,39 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 				canFire = false;
 				// invoke a function call in <fireDelayTime> to reset canFire back to true, allowing another firing session
 				Invoke ("ResetFire", fireDelayTime);
-			}		
+			}
 		}
 	}
-	
-	public void ResetFire ()
-	{
-		canFire=true;	
+
+	/// <summary>
+	/// Sets AI state for Gun.
+	/// </summary>
+	/// <param name="val">AIAttackState</param>
+	public void SetAIState(AIAttackState val) {
+		currentState = val;
+	}
+
+	/// <summary>
+	/// Sets AI control for Gun.
+	/// </summary>
+	/// <param name="val">If set to <c>true</c> AI controll auto shot.</param>
+	public void CanControl(bool val) {
+		canControl = val;
+	}
+
+	/// <summary>
+	/// Sets AI can fire.
+	/// </summary>
+	/// <param name="val">If set to <c>true</c> AI can fire.</param>
+	public void SetFire (bool val) {
+		canFire = val;
+	}
+
+	/// <summary>
+	/// Resets AI can fire.
+	/// </summary>
+	public void ResetFire () {
+		SetFire (true);
 	}
 	
 }

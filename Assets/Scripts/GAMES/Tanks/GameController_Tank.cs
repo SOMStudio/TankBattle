@@ -124,7 +124,7 @@ public class GameController_Tank : BaseGameController
 	void StartPlayer()
 	{
 		// grab a reference to the main player's data manager so we can update its values later on (scoring, lives etc.)
-		mainPlayerDataManager1= playerGO1.GetComponent<PlayerManager_Tank>().myDataManager;
+		mainPlayerDataManager1= playerGO1.GetComponent<PlayerManager_Tank>().DataManager_Tank;
 		
 		// all ready to play, let's go!
 		thePlayerScript.GameStart();

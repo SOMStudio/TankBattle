@@ -7,21 +7,22 @@ using System.Collections;
 
 public class BaseWaypointFollower : ExtendedCustomMonoBehaviour 
 {
+	[Header("AI Controller")]
 	public BaseAIController AIController;
-	
-	public virtual void Start ()
-	{
-		if(!didInit)
-			Init ();
-	}
+
+	// main logic
 	
 	public virtual void Init ()
 	{
 		// cache our transform
-		myTransform= transform;
+		if (!myTransform) {
+			myTransform = transform;
+		}
 		
 		// cache our gameObject
-		myGO= gameObject;
+		if (!myGO) {
+			myGO = gameObject;
+		}
 		
 		// cache a reference to the AI controller
 		AIController= myGO.GetComponent<BaseAIController>();
@@ -41,14 +42,21 @@ public class BaseWaypointFollower : ExtendedCustomMonoBehaviour
 		// set a flag to tell us that init has happened
 		didInit= true;
 	}
-	
 		
-	public virtual void SetWayController( Waypoints_Controller aWaypointControl )
+	public virtual void SetAIWayController( Waypoints_Controller aWaypointControl )
 	{
 		if(AIController==null)
 			Init ();
 		
 		// pass this on to our waypoint controller, so that it can follow the waypoints
 		AIController.SetWayController(aWaypointControl);
+	}
+
+	public virtual void ClearAIWayController() {
+		if(AIController==null)
+			Init ();
+
+		// pass this on to our waypoint controller, so that it can follow the waypoints
+		AIController.ClearWayController();
 	}
 }

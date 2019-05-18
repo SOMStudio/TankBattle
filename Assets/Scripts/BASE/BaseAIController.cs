@@ -5,14 +5,10 @@ using AIStates;
 [AddComponentMenu("Base/AI Controller")]
 
 public class BaseAIController : ExtendedCustomMonoBehaviour {
-	
-	// AI states are defined in the AIStates namespace
-		
-	private Transform proxyTarget;
+
 	private Vector3 relativeTarget;
 	private float targetAngle;
 	private RaycastHit hit;
-	private Transform tempTransform;
 	private Vector3 tempDirVec;
 	
 	public float horz;
@@ -82,76 +78,85 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 	public Vector3 RelativeWaypointPosition;
 	
 	public bool AIControlled;
-	
-	public void Start ()
-	{
-		Init ();
+	public bool useFixedUpdateForAIState = false;
+
+	// main event
+	void LateUpdate() {
+		LateUpdateAIState ();
 	}
-	
-	public virtual void Init () 
-	{				
-		// cache ref to gameObject
-		myGO= gameObject;
+
+	// main logic
+
+	public override void Init () 
+	{		
+		if (!didInit) {
+			// cache ref to gameObject
+			myGO = gameObject;
 		
-		// cache ref to transform
-		myTransform= transform;
+			// cache ref to transform
+			myTransform = transform;
 		
-		// rotateTransform may be set if the object we rotate is different to the main transform
-		if( rotateTransform==null )
-			rotateTransform= myTransform;
+			// rotateTransform may be set if the object we rotate is different to the main transform
+			if (rotateTransform == null)
+				rotateTransform = myTransform;
 		
-		// cache a ref to our rigidbody
-		myBody= myTransform.GetComponent<Rigidbody>();
+			// cache a ref to our rigidbody
+			myBody = myTransform.GetComponent<Rigidbody> ();
 		
-		// init done!
-		didInit= true;
+			// init done!
+			didInit = true;
+		}
 	}
-	
-	public void SetAIControl( bool state )
+
+	public void SetCanControl (bool val) {
+		canControl = val;
+	}
+
+	public void SetAIControl (bool val)
 	{
-		AIControlled= state;
+		AIControlled = val;
 	}
 	
 	// set up AI parameters --------------------
 	
-	public void SetPatrolSpeed( float aNum )
+	public void SetPatrolSpeed (float aNum)
 	{
-		patrolSpeed= aNum;
+		patrolSpeed = aNum;
 	}
 	
-	public void SetPatrolTurnSpeed( float aNum )
+	public void SetPatrolTurnSpeed (float aNum)
 	{
-		patrolTurnSpeed= aNum;
+		patrolTurnSpeed = aNum;
 	}
 	
-	public void SetWallAvoidDistance( float aNum )
+	public void SetWallAvoidDistance (float aNum)
 	{
-		wallAvoidDistance= aNum;
+		wallAvoidDistance = aNum;
 	}
 	
-	public void SetWaypointDistance( float aNum )
+	public void SetWaypointDistance (float aNum)
 	{
-		waypointDistance= aNum;
+		waypointDistance = aNum;
 	}
 
-	public void SetMoveSpeed( float aNum )
+	public void SetMoveSpeed (float aNum)
 	{
-		moveSpeed=aNum;
+		moveSpeed = aNum;
 	}
 	
-	public void SetMinChaseDistance( float aNum )
+	public void SetMinChaseDistance (float aNum)
 	{
-		minChaseDistance= aNum;
+		minChaseDistance = aNum;
 	}
 	
-	public void SetMaxChaseDistance( float aNum )
+	public void SetMaxChaseDistance (float aNum)
 	{
-		maxChaseDistance= aNum;
+		maxChaseDistance = aNum;
 	}
 	
-	public void SetPathSmoothing( float aNum )
+	public void SetPathSmoothing (float aNum)
 	{
-		pathSmoothing= aNum;
+		pathSmoothing = aNum;
 	}
 	
 	// -----------------------------------------
@@ -167,28 +172,30 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 		// set a target for this AI to chase, if required
 		followTarget= theTransform;
 	}
-	
-	public virtual void Update () 
+
+	public virtual void LateUpdateAIState () 
 	{
 		// make sure we have initialized before doing anything
-		if( !didInit )
+		if (!didInit)
 			Init ();
-		
+
 		// check to see if we're supposed to be controlling the player
-		if( !AIControlled )
+		if (!AIControlled)
 			return;
-		
+
 		// do AI updates
-		UpdateAI();
-	}  
+		UpdateAI ();
+	}
 	
 	public virtual void UpdateAI()
 	{
 		// reset our inputs
 		horz=0;
 		vert=0;
-		
-		int obstacleFinderResult= IsObstacleAhead();
+
+		if (followTarget != null) {
+			obstacleFinderResult = IsObstacleAhead ();
+		}
 		
 		switch( currentAIState )
 		{
@@ -255,7 +262,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 			// backing up
 			MoveBack ();
 			
-			if( obstacleFinderResult < 3 )
+			if( obstacleFinderResult==0 )
 			{
 				// now we've backed up, lets randomize whether to go left or right
 				if( Random.Range (0,100)>50 )
@@ -312,7 +319,8 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 			UpdateWaypoints();
 			
 			// move the ship
-			if( !isStationary )
+			if( !isStationary 
+				&& currentWaypointTransform != null)
 			{
 				targetMoveVec = Vector3.Normalize ( currentWaypointTransform.position - myTransform.position );
 				moveVec= Vector3.Lerp( moveVec, targetMoveVec, Time.deltaTime * pathSmoothing );
@@ -464,8 +472,10 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 		}
 		
 		// draw this raycast so we can see what it is doing
-		Debug.DrawRay(myTransform.position, ((myTransform.forward +(myTransform.right * 0.5f)) * wallAvoidDistance));
-		Debug.DrawRay(myTransform.position, ((myTransform.forward +(myTransform.right * -0.5f)) * wallAvoidDistance));
+		#if UNITY_EDITOR
+			Debug.DrawRay (myTransform.position, ((myTransform.forward + (myTransform.right * 0.5f)) * wallAvoidDistance));
+			Debug.DrawRay (myTransform.position, ((myTransform.forward + (myTransform.right * -0.5f)) * wallAvoidDistance));
+		#endif
 		
 		// cast a ray out forward from our AI and put the 'result' into the variable named hit
 		if(Physics.Raycast( myTransform.position, myTransform.forward + ( myTransform.right * 0.5f ), out hit, wallAvoidDistance ))
@@ -474,15 +484,15 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 			// it's a left hit, so it's a type 1 right now (though it could change when we check on the other side)
 			obstacleHitType=1;
 		}
-
+		
 		if(Physics.Raycast( myTransform.position,myTransform.forward + ( myTransform.right * -0.5f ), out hit, wallAvoidDistance ))
 		{
 			// obstacle
-			if ( obstacleHitType==0 )
+			if( obstacleHitType==0 )
 			{
 				// if we haven't hit anything yet, this is a type 2
 				obstacleHitType=2;
-			} else if ( obstacleHitType==1 ) {
+			} else {
 				// if we have hits on both left and right raycasts, it's a type 3
 				obstacleHitType=3;
 			}
@@ -521,8 +531,10 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 		// first, let's get a vector to use for raycasting by subtracting the target position from our AI position
 		tempDirVec=Vector3.Normalize( aTarget.position - myTransform.position );
 		
-		// lets have a debug line to check the distance where we look
-		Debug.DrawLine( myTransform.position, myTransform.position + myTransform.forward * maxChaseDistance );
+		// lets have a debug line to check the distance between the two manually, in case you run into trouble!
+		#if UNITY_EDITOR
+		Debug.DrawLine( myTransform.position, aTarget.position );
+		#endif
 		
 		// cast a ray from our AI, out toward the target passed in (use the tempDirVec magnitude as the distance to cast)
 		if( Physics.Raycast( myTransform.position + ( visionHeightOffset * myTransform.up ), tempDirVec, out hit, maxChaseDistance ))
@@ -530,9 +542,6 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 			// check to see if we hit the target
 			if( hit.transform.gameObject == aTarget.gameObject )
 			{
-				//debugin line when we see target
-				Debug.DrawLine( myTransform.position, aTarget.position );
-
 				return true;
 			}
 		}
@@ -543,8 +552,10 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 	
 	public void SetWayController( Waypoints_Controller aControl )
 	{
+		if (aControl == null)
+			return;
+
 		myWayControl=aControl;
-		aControl=null;
 		
 		// grab total waypoints
 		totalWaypoints = myWayControl.GetTotal();
@@ -558,6 +569,12 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 		} else {
 			currentWaypointNum= 0;
 		}
+
+		if (myWayControl.closed) {
+			loopPath = true;
+		} else {
+			loopPath = false;
+		}
 		
 		Init();
 		
@@ -570,13 +587,18 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 			myTransform.position= currentWaypointTransform.position;
 		}
 	}
+
+	public void ClearWayController()
+	{
+		myWayControl = null;
+	}
 	
 	public void SetReversePath( bool shouldRev )
 	{
 		shouldReversePathFollowing= shouldRev;
 	}
 	
-		public void SetSpeed( float aSpeed )
+	public void SetSpeed( float aSpeed )
 	{
 		moveSpeed= aSpeed;
 	}
@@ -590,7 +612,11 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 	{
 		modelRotateSpeed= aRate;
 	}
-	
+
+	public virtual void CurrentWaypointChanged() {
+
+	}
+
 	void UpdateWaypoints()
 	{
 		// If we don't have a waypoint controller, we safely drop out
@@ -604,8 +630,18 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 			return;
 		} else if( reachedLastWaypoint )
 		{
-			currentWaypointNum= 0;
-			reachedLastWaypoint= false;
+			if (!loopPath) {
+				SetAIState (AIState.paused_no_target);
+
+				currentWaypointNum = 0;
+				totalWaypoints = 0;
+				reachedLastWaypoint = false;
+
+				// grab our transform reference from the waypoint controller
+				currentWaypointTransform = null;
+
+				return;
+			}
 		}
 		
 		// because of the order that scripts run and are initialised, it is possible for this function
@@ -628,11 +664,11 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 		// to advance on to the next one
 	
 		myPosition= myTransform.position;
-		myPosition.y= 0;
+		//myPosition.y= 0;
 	
 		// get waypoint position and 'flatten' it
 		nodePosition= currentWaypointTransform.position;
-		nodePosition.y= 0;
+		//nodePosition.y= 0;
 	
 		// check distance from this to the waypoint
 	
@@ -657,6 +693,9 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 						
 						// the route keeps going in a loop, so we don't want reachedLastWaypoint to ever become true
 						reachedLastWaypoint= false;
+
+						// grab our transform reference from the waypoint controller
+						currentWaypointTransform= myWayControl.GetWaypoint( currentWaypointNum );
 					}
 					// drop out of this function before we grab another waypoint into currentWaypointTransform, as
 					// we don't need one and the index may be invalid
@@ -675,6 +714,9 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 						
 						// the route keeps going in a loop, so we don't want reachedLastWaypoint to ever become true
 						reachedLastWaypoint= false;
+
+						// grab our transform reference from the waypoint controller
+						currentWaypointTransform= myWayControl.GetWaypoint( currentWaypointNum );
 					}
 					// drop out of this function before we grab another waypoint into currentWaypointTransform, as
 					// we don't need one and the index may be invalid
@@ -684,7 +726,9 @@ public class BaseAIController : ExtendedCustomMonoBehaviour {
 			
 			// grab our transform reference from the waypoint controller
 			currentWaypointTransform= myWayControl.GetWaypoint( currentWaypointNum );
-	
+
+			//Event for override
+			CurrentWaypointChanged ();
 		}
 	}
 	

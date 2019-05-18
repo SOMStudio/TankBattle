@@ -1,23 +1,20 @@
 using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("Base/User Manager")]
 
 public class BaseUserManager : MonoBehaviour
 {
-	// gameplay specific data
-	// we keep these private and provide methods to modify them instead, just to prevent any
-	// accidental corruption or invalid data coming in
-	private int score;
-	private int highScore;
-	private int level;
-	private int health;
+	protected int score;
+	protected int highScore;
+	protected int level;
+	protected int health;
 
-	private bool isFinished;
+	protected bool isFinished;
 	
-	// this is the display name of the player
-	public string playerName ="Anonim";
-		
+	[SerializeField]
+	protected string playerName ="Anonim";
+
+	// main Logic
 	public virtual void GetDefaultData()
 	{
 		playerName="Anonim";
@@ -53,6 +50,11 @@ public class BaseUserManager : MonoBehaviour
 	public int GetHighScore()
 	{
 		return highScore;
+	}
+
+	public void SetHighScore(int val)
+	{
+		highScore = val;
 	}
 		
 	public int GetScore()
@@ -94,7 +96,9 @@ public class BaseUserManager : MonoBehaviour
 	{
 		health=num;
 	}
-	
+
+	//===============================
+
 	public bool GetIsFinished()
 	{
 		return isFinished;
@@ -104,5 +108,4 @@ public class BaseUserManager : MonoBehaviour
 	{
 		isFinished=aVal;
 	}
-	
 }

@@ -42,7 +42,7 @@ public class PlayerTopDown_Tank : BaseTopDown
 			myPlayerManager= myGO.GetComponent<PlayerManager_Tank>();
 		
 		// set up the data for our player
-		myDataManager= myPlayerManager.myDataManager;
+		myDataManager= myPlayerManager.DataManager_Tank;
 		myDataManager.SetName ("Player");
 		myDataManager.SetHealth (3);
 		myDataManager.SetDetaleHealth (100);
@@ -55,7 +55,7 @@ public class PlayerTopDown_Tank : BaseTopDown
 		GameController_Tank.Instance.UpdateLivesDetaleP1(myDataManager.GetDetaleHealth());
 	}
 	
-	public override void GetInput()
+	protected override void GetInput()
 	{
 		if(isFinished || isRespawning)
 		{
