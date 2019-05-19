@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+[AddComponentMenu("Base/Music Controller")]
+
 public class BaseMusicController : MonoBehaviour {
 
 	[SerializeField]

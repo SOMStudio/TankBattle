@@ -3,8 +3,6 @@ using System.Collections;
 
 [AddComponentMenu("Base/BaseWaypointFollower")]
 
-// uses the translate along path function of the AIController to follow along a path
-
 public class BaseWaypointFollower : ExtendedCustomMonoBehaviour 
 {
 	[Header("AI Controller")]
@@ -12,7 +10,6 @@ public class BaseWaypointFollower : ExtendedCustomMonoBehaviour
 	private BaseAIController AIController;
 
 	// main logic
-	
 	public override void Init ()
 	{
 		base.Init ();
