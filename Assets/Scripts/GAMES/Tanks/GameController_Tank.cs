@@ -16,7 +16,7 @@ public class GameController_Tank : BaseGameController
 	[SerializeField]
 	private Transform playerParent;
 	[SerializeField]
-	private Transform [] startPoints;
+	private Transform[] startPoints;
     
 	private Vector3[] playerStarts;
 	private Quaternion[] playerRotations;
