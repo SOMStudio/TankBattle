@@ -6,8 +6,7 @@ public class UserManager_Tank : BaseUserManager {
 	private float detaleHelth;
 	[SerializeField]
 	private float protection;
-
-	// main logic
+	
 	public override void GetDefaultData()
 	{
 		base.GetDefaultData ();
@@ -15,8 +14,7 @@ public class UserManager_Tank : BaseUserManager {
 		detaleHelth = 100;
 		protection = 1;
 	}
-
-	//protection
+	
 	public float GetProtection()
 	{
 		return protection;
@@ -36,24 +34,23 @@ public class UserManager_Tank : BaseUserManager {
 	{
 		protection = num;
 	}
-
-	//detale helth
-	public float GetDetaleHealth()
+	
+	public float GetDetailHealth()
 	{
 		return detaleHelth;
 	}
 
-	public void AddDetaleHealth(float num)
+	public void AddDetailHealth(float num)
 	{
 		detaleHelth += num;
 	}
 
-	public void ReduceDetaleHealth(float num)
+	public void ReduceDetailHealth(float num)
 	{
 		detaleHelth -= num;
 	}
 
-	public void SetDetaleHealth(float num)
+	public void SetDetailHealth(float num)
 	{
 		detaleHelth = num;
 	}

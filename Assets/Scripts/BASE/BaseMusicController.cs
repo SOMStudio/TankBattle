@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 [AddComponentMenu("Base/Music Controller")]
-
 public class BaseMusicController : MonoBehaviour {
 
 	[SerializeField]
@@ -11,20 +10,16 @@ public class BaseMusicController : MonoBehaviour {
 	[System.NonSerialized]
 	public static BaseMusicController Instance;
 
-	// main event
-	void Awake()
+	private void Awake()
 	{
 		Init ();
 	}
 
-	void Start() {
-		// keep this object alive
+	private void Start() {
 		DontDestroyOnLoad (this.gameObject);
 	}
-
-	// main logic
+	
 	public void Init() {
-		// activate instance
 		if (Instance == null) {
 			Instance = this;
 		} else if (Instance != this) {
@@ -64,12 +59,10 @@ public class BaseMusicController : MonoBehaviour {
 		}
 	}
 
-	//predefine
-
 	public void PlayRememberMusic() {
 		MusicController temp1 = musicList [0];
 
-		if (temp1.IsPlaing () == true) {
+		if (temp1.IsPlaying ()) {
 			StopMusic (0);
 		}
 
@@ -79,7 +72,7 @@ public class BaseMusicController : MonoBehaviour {
 	public void PlayLevelMusic() {
 		MusicController temp1 = musicList [1];
 
-		if (temp1.IsPlaing () == true) {
+		if (temp1.IsPlaying ()) {
 			StopMusic (1);
 		}
 

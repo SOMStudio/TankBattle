@@ -66,14 +66,14 @@ public class PlayerTopDown_Tank : BaseTopDown
 		myDataManager = myPlayerManager.DataManager_Tank;
 		myDataManager.SetName ("Player");
 		myDataManager.SetHealth (3);
-		myDataManager.SetDetaleHealth (100);
+		myDataManager.SetDetailHealth (100);
 		myDataManager.SetProtection (0.5f);
 		
 		isFinished = false;
 		
 		// get a ref to the player manager
 		GameController_Tank.Instance.UpdateLivesP1 (myDataManager.GetHealth ());
-		GameController_Tank.Instance.UpdateLivesDetaleP1 (myDataManager.GetDetaleHealth ());
+		GameController_Tank.Instance.UpdateLivesDetailP1 (myDataManager.GetDetailHealth ());
 	}
 	
 	protected override void GetInput()
@@ -114,16 +114,16 @@ public class PlayerTopDown_Tank : BaseTopDown
 	}
 
 	void ReduceLife(float val) {
-		myDataManager.ReduceDetaleHealth (val);
+		myDataManager.ReduceDetailHealth (val);
 
-		if (myDataManager.GetDetaleHealth () < 0) {
+		if (myDataManager.GetDetailHealth () < 0) {
 			// as our ID is 1, we must be player 1
-			GameController_Tank.Instance.UpdateLivesDetaleP1(0);
+			GameController_Tank.Instance.UpdateLivesDetailP1(0);
 
 			LostLife ();
 		} else {
 			// as our ID is 1, we must be player 1
-			GameController_Tank.Instance.UpdateLivesDetaleP1(myDataManager.GetDetaleHealth());
+			GameController_Tank.Instance.UpdateLivesDetailP1(myDataManager.GetDetailHealth());
 		}
 	}
 
@@ -179,8 +179,8 @@ public class PlayerTopDown_Tank : BaseTopDown
 		Invoke ("MakeVulnerable", 3);
 
 		//set detale helth
-		myDataManager.SetDetaleHealth (100);
-		GameController_Tank.Instance.UpdateLivesDetaleP1 (myDataManager.GetDetaleHealth ());
+		myDataManager.SetDetailHealth (100);
+		GameController_Tank.Instance.UpdateLivesDetailP1 (myDataManager.GetDetailHealth ());
 
 		// show ship body again
 		theMeshGO.SetActive (true);

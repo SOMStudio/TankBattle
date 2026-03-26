@@ -1,10 +1,10 @@
 using UnityEngine;
- 
+
 public static class RendererExtensions
 {
 	public static bool IsVisibleFrom(this Renderer renderer, Camera camera)
 	{
-		if(camera == null)
+		if (camera == null)
 			return true;
 
 		Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);

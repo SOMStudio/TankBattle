@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class BaseSoundController : MonoBehaviour
 {
 	[SerializeField]
-	private string gamePrefsName = "DefaultGame"; // DO NOT FORGET TO SET THIS IN THE EDITOR!!
+	private string gamePrefsName = "DefaultGame";
 
 	[SerializeField]
 	protected AudioClip[] GameSounds;
@@ -22,10 +22,8 @@ public class BaseSoundController : MonoBehaviour
 	[System.NonSerialized]
 	public static BaseSoundController Instance;
 
-	// main event
-	void Awake()
+	private void Awake()
 	{
-		// activate instance
 		if (Instance == null) {
 			Instance = this;
 
@@ -44,13 +42,10 @@ public class BaseSoundController : MonoBehaviour
 		}
 	}
 
-	// main logic
-	void Init() {
-		// keep this object alive
+	private void Init() {
 		DontDestroyOnLoad (this.gameObject);
-
-		// we will grab the volume from PlayerPrefs when this script first starts
-		string stKey = string.Format("{0}_SFXVol", gamePrefsName);
+		
+		string stKey = $"{gamePrefsName}_SFXVol";
 		if (PlayerPrefs.HasKey (stKey)) {
 			volume = PlayerPrefs.GetFloat (stKey);
 		} else {
@@ -58,14 +53,12 @@ public class BaseSoundController : MonoBehaviour
 		}
 
 		soundObjectList = new List<SoundObject> ();
-
-		// make sound objects for all of the sounds in GameSounds array
+		
 		foreach(AudioClip theSound in GameSounds)
 		{
 			tempSoundObj= new SoundObject(theSound, theSound.name, volume);
 			soundObjectList.Add(tempSoundObj);
-
-			// keep this object alive
+			
 			DontDestroyOnLoad (tempSoundObj.sourceGO);
 
 			totalSounds++;
@@ -81,7 +74,7 @@ public class BaseSoundController : MonoBehaviour
 			Init ();
 		}
 
-		string stKey = string.Format("{0}_SFXVol", gamePrefsName);
+		string stKey = $"{gamePrefsName}_SFXVol";
 		volume= PlayerPrefs.GetFloat(stKey);
 
 		for (int i = 0; i < soundObjectList.Count; i++) {
@@ -92,7 +85,6 @@ public class BaseSoundController : MonoBehaviour
 
 	public void PlaySoundByIndex(int anIndexNumber, Vector3 aPosition)
 	{
-		// make sure we're not trying to play a sound indexed higher than exists in the array
 		if(anIndexNumber>soundObjectList.Count)
 		{
 			Debug.LogWarning("BaseSoundController>Trying to do PlaySoundByIndex with invalid index number. Playing last sound in array, instead.");
@@ -115,10 +107,9 @@ public class SoundObject
 
 	public SoundObject(AudioClip aClip, string aName, float aVolume)
 	{
-		// in this (the constructor) we create a new audio source and store the details of the sound itself
-		sourceGO= new GameObject("AudioSource_"+aName);
+		sourceGO = new GameObject("AudioSource_" + aName);
 		sourceTR = sourceGO.transform;
-		source = sourceGO.AddComponent<AudioSource> ();
+		source = sourceGO.AddComponent<AudioSource>();
 		source.name = "AudioSource_" + aName;
 		source.playOnAwake = false;
 		source.clip = aClip;
@@ -129,7 +120,7 @@ public class SoundObject
 
 	public void PlaySound(Vector3 atPosition)
 	{
-		sourceTR.position= atPosition;
+		sourceTR.position = atPosition;
 		source.PlayOneShot(clip);
 	}
 }

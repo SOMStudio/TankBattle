@@ -1,52 +1,42 @@
 using UnityEngine;
-using System.Collections;
 
 [AddComponentMenu("Base/BaseWaypointFollower")]
-
-public class BaseWaypointFollower : ExtendedCustomMonoBehaviour 
+public class BaseWaypointFollower : ExtendedCustomMonoBehaviour
 {
-	[Header("AI Controller")]
-	[SerializeField]
+	[Header("AI Controller")] [SerializeField]
 	private BaseAIController AIController;
 
-	// main logic
-	public override void Init ()
+	public override void Init()
 	{
-		base.Init ();
-		
-		// cache a reference to the AI controller
-		AIController = myGO.GetComponent<BaseAIController> ();
-			
+		base.Init();
+
+		AIController = myGO.GetComponent<BaseAIController>();
+
 		if (AIController == null)
-			AIController = myGO.AddComponent<BaseAIController> ();
-		
-		// run the Init function from our base class (BaseAIController.cs)
-		AIController.Init ();
-		
-		// tell AI controller that we want it to control this object
-		AIController.SetAIControl (true);
-		
-		// tell our AI to follow waypoints
-		AIController.SetAIState (AIStates.AIState.translate_along_waypoint_path);
-		
-		// set a flag to tell us that init has happened
+			AIController = myGO.AddComponent<BaseAIController>();
+
+		AIController.Init();
+
+		AIController.SetAIControl(true);
+
+		AIController.SetAIState(AIStates.AIState.translate_along_waypoint_path);
+
 		didInit = true;
 	}
-		
-	public virtual void SetAIWayController( Waypoints_Controller aWaypointControl )
+
+	public virtual void SetAIWayController(Waypoints_Controller aWaypointControl)
 	{
-		if(AIController==null)
-			Init ();
-		
-		// pass this on to our waypoint controller, so that it can follow the waypoints
+		if (AIController == null)
+			Init();
+
 		AIController.SetWayController(aWaypointControl);
 	}
 
-	public virtual void ClearAIWayController() {
-		if(AIController==null)
-			Init ();
+	public virtual void ClearAIWayController()
+	{
+		if (AIController == null)
+			Init();
 
-		// pass this on to our waypoint controller, so that it can follow the waypoints
 		AIController.ClearWayController();
 	}
 }

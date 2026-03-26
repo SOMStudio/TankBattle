@@ -23,35 +23,30 @@ public class SpawnController_Tank : MonoBehaviour {
 	[System.NonSerialized]
 	public static SpawnController_Tank Instance;
 
-	// main event
-	void Awake() {
-		// init object
+	private void Awake() {
 		Init ();
 	}
 
-	void Start ()
+	private void Start ()
 	{
-		// start spawn with delay
-		Invoke("SpawnRandomObjectWithLimit", timeBeforeFirstSpawn);
+		Invoke(nameof(SpawnRandomObjectWithLimit), timeBeforeFirstSpawn);
 	}
-
-	// main logic
-	public void DecriseCountSpawnedObject() {
+	
+	public void DecreaseCountSpawnedObject() {
 		countSpawnedObject--;
 	}
 
 	public void SpawnRandomObjectWithLimit() {
 		if (countSpawnedObject < limitSpawnedObject) {
-			SpawnRandomObjectInRadomPlace ();
+			SpawnRandomObjectInRandomPlace ();
 		}
 
 		if (countSpawnedObject < limitSpawnedObject) {
-			Invoke ("SpawnRandomObjectWithLimit", 0.5f);
+			Invoke (nameof(SpawnRandomObjectWithLimit), 0.5f);
 		}
 	}
 
-	void Init() {
-		// activate instance
+	private void Init() {
 		if (Instance == null) {
 			Instance = this;
 		} else if (Instance != this) {
@@ -67,12 +62,10 @@ public class SpawnController_Tank : MonoBehaviour {
 
 				if (objectSp != null && pointSp != null) {
 					var enemyTr = SpawnController.Instance.Spawn (objectSp, pointSp.transform.position, pointSp.transform.rotation);
-
-					// set parent
+					
 					if (spawnParent != null)
 						enemyTr.parent = spawnParent;
-
-					// show particle
+					
 					if (spawnParticle != null) {
 						SpawnController.Instance.Spawn (spawnParticle, pointSp.transform.position, pointSp.transform.rotation);
 					}
@@ -83,7 +76,7 @@ public class SpawnController_Tank : MonoBehaviour {
 		}
 	}
 
-	private void SpawnRandomObjectInRadomPlace() {
+	private void SpawnRandomObjectInRandomPlace() {
 		if (spawnObjectPrefabs.Length > 0) {
 			if (spawnObjectPoints.Length > 0) {
 				int numObjectSpawn = Random.Range (0, spawnObjectPrefabs.Length);

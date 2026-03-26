@@ -2,23 +2,16 @@ using UnityEngine;
 using System.Collections;
 
 [AddComponentMenu("Base/Weapon Controller")]
-
 public class BaseWeaponController : MonoBehaviour
 {
-	[Header("Base")]
-	[SerializeField]
-	protected GameObject[] weapons;
+	[Header("Base")] [SerializeField] protected GameObject[] weapons;
 
-	[SerializeField]
-	protected int selectedWeaponSlot;
-	[SerializeField]
-	protected int lastSelectedWeaponSlot;
-	
-	[SerializeField]
-	protected Vector3 offsetWeaponSpawnPosition;
-	
-	[SerializeField]
-	protected Transform forceParent;
+	[SerializeField] protected int selectedWeaponSlot;
+	[SerializeField] protected int lastSelectedWeaponSlot;
+
+	[SerializeField] protected Vector3 offsetWeaponSpawnPosition;
+
+	[SerializeField] protected Transform forceParent;
 
 	private ArrayList weaponSlots;
 	private ArrayList weaponScripts;
@@ -26,200 +19,171 @@ public class BaseWeaponController : MonoBehaviour
 	private Vector3 TEMPvector3;
 	private Quaternion TEMProtation;
 	private GameObject TEMPgameObject;
-	
+
 	private Transform myTransform;
 	private int ownerNum;
 
-	[SerializeField]
-	protected bool useForceVectorDirection;
-	[SerializeField]
-	protected Vector3 forceVector;
+	[SerializeField] protected bool useForceVectorDirection;
+	[SerializeField] protected Vector3 forceVector;
 
 	private Vector3 theDir;
 
-	// main event
-	void Start ()
+	private void Start()
 	{
-		Init ();
+		Init();
 	}
 
-	// main Logic
-	protected virtual void Init() {
-		// default to the first weapon slot
+	protected virtual void Init()
+	{
 		selectedWeaponSlot = 0;
 		lastSelectedWeaponSlot = -1;
 
-		// initialize weapon list ArrayList
-		weaponSlots = new ArrayList ();
+		weaponSlots = new ArrayList();
 
-		// initialize weapon scripts ArrayList
-		weaponScripts = new ArrayList ();
+		weaponScripts = new ArrayList();
 
-		// cache a reference to the transform
 		myTransform = transform;
 
-		if (forceParent == null) {
+		if (forceParent == null)
+		{
 			forceParent = myTransform;
 		}
 
 		TEMPvector3 = forceParent.position;
 		TEMProtation = forceParent.rotation;
 
-		// we instantiate all of the weapons and hide them so that we can activate and use them when needed.
-		for (int i = 0; i < weapons.Length; i++) {
-			// Instantiate the item from the weapons list
-			TEMPgameObject = (GameObject)Instantiate (weapons [i], TEMPvector3 + offsetWeaponSpawnPosition, TEMProtation);
+		for (int i = 0; i < weapons.Length; i++)
+		{
+			TEMPgameObject = (GameObject)Instantiate(weapons[i], TEMPvector3 + offsetWeaponSpawnPosition, TEMProtation);
 
 			TEMPgameObject.transform.parent = forceParent;
 			TEMPgameObject.layer = forceParent.gameObject.layer;
 			TEMPgameObject.transform.position = forceParent.position;
 			TEMPgameObject.transform.rotation = forceParent.rotation;
 
-			// store a reference to the gameObject in an ArrayList
-			weaponSlots.Add (TEMPgameObject);
+			weaponSlots.Add(TEMPgameObject);
 
-			// grab a reference to the weapon script attached to the weapon and store the reference in an ArrayList
-			TEMPWeapon = TEMPgameObject.GetComponent<BaseWeaponScript> ();
-			weaponScripts.Add (TEMPWeapon);
+			TEMPWeapon = TEMPgameObject.GetComponent<BaseWeaponScript>();
+			weaponScripts.Add(TEMPWeapon);
 
-			// disable the weapon
-			TEMPgameObject.SetActive (false);
+			TEMPgameObject.SetActive(false);
 		}
 
-		// now we set the default selected weapon to visible
-		SetWeaponSlot (0);
+		SetWeaponSlot(0);
 	}
 
 	public void SetOwner(int aNum)
 	{
-		// used to identify the object firing, if required
-		ownerNum = aNum;	
-	}
-	
-	public virtual void SetWeaponSlot (int slotNum)
-	{
-		// if the selected weapon is already this one, drop out!
-		if (slotNum == lastSelectedWeaponSlot)
-			return;
-		
-		// disable the current weapon
-		DisableCurrentWeapon ();
-		
-		// set our current weapon to the one passed in
-		selectedWeaponSlot = slotNum;
-		
-		// make sure sensible values are getting passed in
-		if (selectedWeaponSlot < 0)
-			selectedWeaponSlot = weaponSlots.Count - 1;
-		
-		// make sure that the weapon slot isn't higher than the total number of weapons in our list
-		if (selectedWeaponSlot > weaponSlots.Count - 1)
-			selectedWeaponSlot = weaponSlots.Count - 1;
-		
-		// we store this selected slot to use to prevent duplicate weapon slot setting
-		lastSelectedWeaponSlot = selectedWeaponSlot;
-		
-		// enable the newly selected weapon
-		EnableCurrentWeapon ();
-	}
-	
-	public virtual void NextWeaponSlot (bool shouldLoop)
-	{
-		// disable the current weapon
-		DisableCurrentWeapon ();
-		
-		// next slot
-		selectedWeaponSlot++;
-		
-		// make sure that the slot isn't higher than the total number of weapons in our list
-		if (selectedWeaponSlot == weaponScripts.Count) {
-			if (shouldLoop) {
-				selectedWeaponSlot = 0;
-			} else {
-				selectedWeaponSlot = weaponScripts.Count - 1;
-			}
-		}
-		
-		// we store this selected slot to use to prevent duplicate weapon slot setting
-		lastSelectedWeaponSlot = selectedWeaponSlot;
-		
-		// enable the newly selected weapon
-		EnableCurrentWeapon ();
-	}
-	
-	public virtual void PrevWeaponSlot (bool shouldLoop)
-	{
-		// disable the current weapon
-		DisableCurrentWeapon ();
-		
-		// prev slot
-		selectedWeaponSlot--;
-		
-		// make sure that the slot is a sensible number
-		if (selectedWeaponSlot < 0) {
-			if (shouldLoop) {
-				selectedWeaponSlot = weaponScripts.Count - 1;
-			} else {
-				selectedWeaponSlot = 0;
-			}
-		}
-		
-		// we store this selected slot to use to prevent duplicate weapon slot setting
-		lastSelectedWeaponSlot = selectedWeaponSlot;
-		
-		// enable the newly selected weapon
-		EnableCurrentWeapon ();
+		ownerNum = aNum;
 	}
 
-	public virtual void DisableCurrentWeapon ()
+	public virtual void SetWeaponSlot(int slotNum)
+	{
+		if (slotNum == lastSelectedWeaponSlot)
+			return;
+
+		DisableCurrentWeapon();
+
+		selectedWeaponSlot = slotNum;
+
+		if (selectedWeaponSlot < 0)
+			selectedWeaponSlot = weaponSlots.Count - 1;
+
+		if (selectedWeaponSlot > weaponSlots.Count - 1)
+			selectedWeaponSlot = weaponSlots.Count - 1;
+
+		lastSelectedWeaponSlot = selectedWeaponSlot;
+
+		EnableCurrentWeapon();
+	}
+
+	public virtual void NextWeaponSlot(bool shouldLoop)
+	{
+		DisableCurrentWeapon();
+
+		selectedWeaponSlot++;
+
+		if (selectedWeaponSlot == weaponScripts.Count)
+		{
+			if (shouldLoop)
+			{
+				selectedWeaponSlot = 0;
+			}
+			else
+			{
+				selectedWeaponSlot = weaponScripts.Count - 1;
+			}
+		}
+
+		lastSelectedWeaponSlot = selectedWeaponSlot;
+
+		EnableCurrentWeapon();
+	}
+
+	public virtual void PrevWeaponSlot(bool shouldLoop)
+	{
+		DisableCurrentWeapon();
+
+		selectedWeaponSlot--;
+
+		if (selectedWeaponSlot < 0)
+		{
+			if (shouldLoop)
+			{
+				selectedWeaponSlot = weaponScripts.Count - 1;
+			}
+			else
+			{
+				selectedWeaponSlot = 0;
+			}
+		}
+
+		lastSelectedWeaponSlot = selectedWeaponSlot;
+
+		EnableCurrentWeapon();
+	}
+
+	public virtual void DisableCurrentWeapon()
 	{
 		if (weaponScripts.Count == 0)
 			return;
-		
-		// grab reference to currently selected weapon script
-		TEMPWeapon = (BaseWeaponScript)weaponScripts [selectedWeaponSlot];
-		
-		// now tell the script to disable itself
-		TEMPWeapon.Disable ();
-		
-		// grab reference to the weapon's gameObject and disable that, too
-		TEMPgameObject = (GameObject)weaponSlots [selectedWeaponSlot];
-		TEMPgameObject.SetActive (false);
+
+		TEMPWeapon = (BaseWeaponScript)weaponScripts[selectedWeaponSlot];
+
+		TEMPWeapon.Disable();
+
+		TEMPgameObject = (GameObject)weaponSlots[selectedWeaponSlot];
+		TEMPgameObject.SetActive(false);
 	}
-	
-	public virtual void EnableCurrentWeapon ()
+
+	public virtual void EnableCurrentWeapon()
 	{
 		if (weaponScripts.Count == 0)
 			return;
-		
-		// grab reference to currently selected weapon
-		TEMPWeapon = (BaseWeaponScript)weaponScripts [selectedWeaponSlot];
-		
-		// now tell the script to enable itself
-		TEMPWeapon.Enable ();
-		
-		TEMPgameObject = (GameObject)weaponSlots [selectedWeaponSlot];
-		TEMPgameObject.SetActive (true);
+
+		TEMPWeapon = (BaseWeaponScript)weaponScripts[selectedWeaponSlot];
+
+		TEMPWeapon.Enable();
+
+		TEMPgameObject = (GameObject)weaponSlots[selectedWeaponSlot];
+		TEMPgameObject.SetActive(true);
 	}
-		
-	public virtual void Fire ()
+
+	public virtual void Fire()
 	{
 		if (weaponScripts == null)
 			return;
-		
+
 		if (weaponScripts.Count == 0)
 			return;
-		
-		// find the weapon in the currently selected slot
-		TEMPWeapon = (BaseWeaponScript)weaponScripts [selectedWeaponSlot];
-		
+
+		TEMPWeapon = (BaseWeaponScript)weaponScripts[selectedWeaponSlot];
+
 		theDir = transform.forward;
-		
+
 		if (useForceVectorDirection)
 			theDir = forceVector;
-		
-		// fire the projectile
-		TEMPWeapon.Fire (theDir, ownerNum);
+
+		TEMPWeapon.Fire(theDir, ownerNum);
 	}
-	
 }

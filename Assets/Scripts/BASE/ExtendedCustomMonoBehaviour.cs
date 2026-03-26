@@ -1,13 +1,10 @@
 using UnityEngine;
 
-public class ExtendedCustomMonoBehaviour : MonoBehaviour 
-{	
-	[Header("Base")]
-	[SerializeField]
-	protected bool didInit;
-	[SerializeField]
-	protected bool canControl;
-	
+public class ExtendedCustomMonoBehaviour : MonoBehaviour
+{
+	[Header("Base")] [SerializeField] protected bool didInit;
+	[SerializeField] protected bool canControl;
+
 	protected int id;
 
 	protected Transform myTransform;
@@ -17,33 +14,33 @@ public class ExtendedCustomMonoBehaviour : MonoBehaviour
 	protected Vector3 tempVEC;
 	protected Transform tempTR;
 
-	// main events
-	void Start() {
+	private void Start()
+	{
 		Init();
 	}
 
-	// main logic
-
-	/// <summary>
-	/// Init main instance (myTransform, myGO, myBody), def. in Start.
-	/// </summary>
-	public virtual void Init() {
-		// cache refs to our transform and gameObject
-		if (!myTransform) {
+	public virtual void Init()
+	{
+		if (!myTransform)
+		{
 			myTransform = transform;
 		}
-		if (!myGO) {
+
+		if (!myGO)
+		{
 			myGO = gameObject;
 		}
-		if (!myBody) {
-			myBody = GetComponent<Rigidbody> ();
+
+		if (!myBody)
+		{
+			myBody = GetComponent<Rigidbody>();
 		}
 
 		didInit = true;
 	}
 
-	public virtual void SetID( int anID )
+	public virtual void SetID(int anID)
 	{
-		id= anID;
+		id = anID;
 	}
 }
