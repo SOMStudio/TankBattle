@@ -30,6 +30,6 @@ Weapon Fire: x, mouseLeft
 Weapon Change: 1, 2, 3
 Weapon Change cyclically: q, w
 
-## Unity 5.6.2
+## Unity 2022
 
 ![Tank battle](screenshot.png)
