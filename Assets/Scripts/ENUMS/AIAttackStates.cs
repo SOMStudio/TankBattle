@@ -1,6 +1,6 @@
 namespace AIAttackStates
 {
-	public enum AIAttackState
+	public enum AiAttackState
 	{
 		random_fire,
 		look_and_destroy,

@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class TopDown_Camera : ExtendedCustomMonoBehaviour
+public class TopDownCamera : ExtendedCustomMonoBehaviour
 {
+	[Header("Camera")]
 	[SerializeField] private Transform followTarget;
 	[SerializeField] private Vector3 targetOffset;
 	[SerializeField] private float moveSpeed = 2f;

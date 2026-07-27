@@ -2,17 +2,15 @@ using UnityEngine;
 
 public class ExtendedCustomMonoBehaviour : MonoBehaviour
 {
-	[Header("Base")] [SerializeField] protected bool didInit;
+	[Header("Base")]
+	[SerializeField] protected bool didInit;
 	[SerializeField] protected bool canControl;
 
 	protected int id;
 
 	protected Transform myTransform;
-	protected GameObject myGO;
+	protected GameObject myGameObject;
 	protected Rigidbody myBody;
-
-	protected Vector3 tempVEC;
-	protected Transform tempTR;
 
 	private void Start()
 	{
@@ -26,9 +24,9 @@ public class ExtendedCustomMonoBehaviour : MonoBehaviour
 			myTransform = transform;
 		}
 
-		if (!myGO)
+		if (!myGameObject)
 		{
-			myGO = gameObject;
+			myGameObject = gameObject;
 		}
 
 		if (!myBody)

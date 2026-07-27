@@ -4,7 +4,8 @@ using AIStates;
 [AddComponentMenu("Base/AI Controller")]
 public class BaseAIController : ExtendedCustomMonoBehaviour
 {
-	[Header("Move")] [SerializeField] private float horz;
+	[Header("Move")]
+	[SerializeField] private float horz;
 	[SerializeField] private float vert;
 
 	private Vector3 relativeTarget;
@@ -13,34 +14,33 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 	private Vector3 tempDirVec;
 	private int obstacleHitType;
 
-	[Header("Settings")] [SerializeField] private bool isStationary;
-	[SerializeField] private AIState currentAIState;
-
+	[Header("Settings")]
+	[SerializeField] private bool isStationary;
+	[SerializeField] private AiState currentAIState;
 	[SerializeField] private float modelRotateSpeed = 15f;
 	[SerializeField] private int followTargetMaxTurnAngle = 120;
 
-	[Header("Patrol")] [SerializeField] private float patrolSpeed = 5f;
+	[Header("Patrol")]
+	[SerializeField] private float patrolSpeed = 5f;
 	[SerializeField] private float patrolTurnSpeed = 10f;
 	[SerializeField] private float wallAvoidDistance = 40f;
 
-	[Header("Chase Target")] [SerializeField]
-	private Transform followTarget;
+	[Header("Chase Target")]
+	[SerializeField] private Transform followTarget;
 
 	[SerializeField] private float minChaseDistance = 2f;
 	[SerializeField] private float maxChaseDistance = 10f;
 	[SerializeField] private float visionHeightOffset = 1f;
 
-	[Header("Waypoint")] [SerializeField] private Waypoints_Controller myWayControl;
-
+	[Header("Waypoint")]
+	[SerializeField] private WaypointsController myWayControl;
 	[SerializeField] private int currentWaypointNum;
-
 	[SerializeField] private float waypointDistance = 5f;
 	[SerializeField] private float moveSpeed = 30f;
 	[SerializeField] private float pathSmoothing = 2f;
 	[SerializeField] private bool shouldReversePathFollowing;
 	[SerializeField] private bool loopPath;
 	[SerializeField] private bool destroyAtEndOfWaypoints;
-
 	[SerializeField] private bool faceWaypoints;
 	[SerializeField] private bool startAtFirstWaypoint;
 
@@ -52,7 +52,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 	private Vector3 myPosition;
 	private float currentWayDist;
 
-	[System.NonSerialized] [SerializeField]
+	[System.NonSerialized]
 	public bool reachedLastWaypoint;
 
 	private Vector3 moveVec;
@@ -66,8 +66,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 
 	[System.NonSerialized] public Vector3 RelativeWaypointPosition;
 
-	public bool AIControlled;
-	public bool useFixedUpdateForAIState = false;
+	public bool aiControlled = true;
 
 	private void LateUpdate()
 	{
@@ -78,7 +77,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 	{
 		if (!didInit)
 		{
-			myGO = gameObject;
+			myGameObject = gameObject;
 
 			myTransform = transform;
 
@@ -98,7 +97,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 
 	public void SetAIControl(bool val)
 	{
-		AIControlled = val;
+		aiControlled = val;
 	}
 
 	public void SetPatrolSpeed(float aNum)
@@ -141,7 +140,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 		pathSmoothing = aNum;
 	}
 
-	public virtual void SetAIState(AIState newState)
+	public virtual void SetAIState(AiState newState)
 	{
 		currentAIState = newState;
 	}
@@ -156,7 +155,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 		if (!didInit)
 			Init();
 
-		if (!AIControlled)
+		if (!aiControlled)
 			return;
 
 		UpdateAI();
@@ -174,33 +173,30 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 
 		switch (currentAIState)
 		{
-			case AIState.moving_looking_for_target:
+			case AiState.moving_looking_for_target:
 				if (followTarget != null)
 					LookAroundFor(followTarget);
 
 				if (obstacleFinderResult == 1)
 				{
-					// GO LEFT
-					SetAIState(AIState.stopped_turning_left);
+					SetAIState(AiState.stopped_turning_left);
 				}
 
 				if (obstacleFinderResult == 2)
 				{
-					// GO RIGHT
-					SetAIState(AIState.stopped_turning_right);
+					SetAIState(AiState.stopped_turning_right);
 				}
 
 				if (obstacleFinderResult == 3)
 				{
-					// BACK UP
-					SetAIState(AIState.backing_up_looking_for_target);
+					SetAIState(AiState.backing_up_looking_for_target);
 				}
 
 				MoveForward();
 				break;
-			case AIState.chasing_target:
+			case AiState.chasing_target:
 				if (followTarget == null)
-					SetAIState(AIState.moving_looking_for_target);
+					SetAIState(AiState.moving_looking_for_target);
 
 				TurnTowardTarget(followTarget);
 
@@ -213,11 +209,11 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 
 				if (distanceToChaseTarget > maxChaseDistance || CanSee(followTarget) == false)
 				{
-					SetAIState(AIState.moving_looking_for_target);
+					SetAIState(AiState.moving_looking_for_target);
 				}
 
 				break;
-			case AIState.backing_up_looking_for_target:
+			case AiState.backing_up_looking_for_target:
 				if (followTarget != null)
 					LookAroundFor(followTarget);
 
@@ -227,16 +223,16 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 				{
 					if (Random.Range(0, 100) > 50)
 					{
-						SetAIState(AIState.stopped_turning_left);
+						SetAIState(AiState.stopped_turning_left);
 					}
 					else
 					{
-						SetAIState(AIState.stopped_turning_right);
+						SetAIState(AiState.stopped_turning_right);
 					}
 				}
 
 				break;
-			case AIState.stopped_turning_left:
+			case AiState.stopped_turning_left:
 				if (followTarget != null)
 					LookAroundFor(followTarget);
 
@@ -244,11 +240,11 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 
 				if (obstacleFinderResult == 0)
 				{
-					SetAIState(AIState.moving_looking_for_target);
+					SetAIState(AiState.moving_looking_for_target);
 				}
 
 				break;
-			case AIState.stopped_turning_right:
+			case AiState.stopped_turning_right:
 				if (followTarget != null)
 					LookAroundFor(followTarget);
 
@@ -256,15 +252,15 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 
 				if (obstacleFinderResult == 0)
 				{
-					SetAIState(AIState.moving_looking_for_target);
+					SetAIState(AiState.moving_looking_for_target);
 				}
 
 				break;
-			case AIState.paused_looking_for_target:
+			case AiState.paused_looking_for_target:
 				if (followTarget != null)
 					LookAroundFor(followTarget);
 				break;
-			case AIState.translate_along_waypoint_path:
+			case AiState.translate_along_waypoint_path:
 				if (!didInit && !reachedLastWaypoint)
 					return;
 
@@ -275,7 +271,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 				{
 					targetMoveVec = Vector3.Normalize(currentWaypointTransform.position - myTransform.position);
 					moveVec = Vector3.Lerp(moveVec, targetMoveVec, Time.deltaTime * pathSmoothing);
-					myTransform.Translate(moveVec * moveSpeed * Time.deltaTime);
+					myTransform.Translate(moveVec * (moveSpeed * Time.deltaTime));
 					MoveForward();
 
 					if (faceWaypoints)
@@ -285,7 +281,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 				}
 
 				break;
-			case AIState.steer_to_waypoint:
+			case AiState.steer_to_waypoint:
 				if (!didInit && !reachedLastWaypoint)
 					return;
 
@@ -310,7 +306,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 				}
 
 				break;
-			case AIState.steer_to_target:
+			case AiState.steer_to_target:
 				if (!didInit)
 					return;
 
@@ -349,7 +345,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 				}
 
 				break;
-			case AIState.paused_no_target:
+			case AiState.paused_no_target:
 				break;
 		}
 	}
@@ -385,7 +381,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 		{
 			if (CanSee(followTarget))
 			{
-				SetAIState(AIState.chasing_target);
+				SetAIState(AiState.chasing_target);
 			}
 		}
 	}
@@ -464,7 +460,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 		return false;
 	}
 
-	public void SetWayController(Waypoints_Controller aControl)
+	public void SetWayController(WaypointsController aControl)
 	{
 		if (aControl == null)
 			return;
@@ -545,7 +541,7 @@ public class BaseAIController : ExtendedCustomMonoBehaviour
 		{
 			if (!loopPath)
 			{
-				SetAIState(AIState.paused_no_target);
+				SetAIState(AiState.paused_no_target);
 
 				currentWaypointNum = 0;
 				totalWaypoints = 0;

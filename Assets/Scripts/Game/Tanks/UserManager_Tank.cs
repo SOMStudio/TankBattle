@@ -2,16 +2,14 @@
 
 public class UserManager_Tank : BaseUserManager {
 
-	[SerializeField]
-	private float detaleHelth;
-	[SerializeField]
-	private float protection;
+	[SerializeField] private float detailedHealth;
+	[SerializeField] private float protection;
 	
 	public override void GetDefaultData()
 	{
 		base.GetDefaultData ();
 
-		detaleHelth = 100;
+		detailedHealth = 100;
 		protection = 1;
 	}
 	
@@ -37,21 +35,21 @@ public class UserManager_Tank : BaseUserManager {
 	
 	public float GetDetailHealth()
 	{
-		return detaleHelth;
+		return detailedHealth;
 	}
 
 	public void AddDetailHealth(float num)
 	{
-		detaleHelth += num;
+		detailedHealth += num;
 	}
 
 	public void ReduceDetailHealth(float num)
 	{
-		detaleHelth -= num;
+		detailedHealth -= num;
 	}
 
 	public void SetDetailHealth(float num)
 	{
-		detaleHelth = num;
+		detailedHealth = num;
 	}
 }

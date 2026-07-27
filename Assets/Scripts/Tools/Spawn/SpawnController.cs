@@ -1,14 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
-[AddComponentMenu("Utility/Spawn Controller")]
-public class SpawnController : ScriptableObject
+public class SpawnController
 {
 	private ArrayList playerTransforms;
 	private ArrayList playerGameObjects;
 
 	private Transform tempTrans;
-	private GameObject tempGO;
+	private GameObject tempGameObject;
 
 	private GameObject[] playerPrefabList;
 	private Vector3[] startPositions;
@@ -16,7 +15,7 @@ public class SpawnController : ScriptableObject
 
 	private static SpawnController instance;
 
-	public SpawnController()
+	private SpawnController()
 	{
 		if (instance != null)
 		{
@@ -33,7 +32,7 @@ public class SpawnController : ScriptableObject
 		{
 			if (instance == null)
 			{
-				ScriptableObject.CreateInstance<SpawnController>();
+				instance = new SpawnController();
 			}
 
 			return instance;
@@ -77,30 +76,30 @@ public class SpawnController : ScriptableObject
 		}
 	}
 
-	public GameObject GetPlayerGO(int indexNum)
+	public GameObject GetPlayerGameObject(int indexNum)
 	{
 		return (GameObject)playerGameObjects[indexNum];
 	}
 
 	public Transform GetPlayerTransform(int indexNum)
 	{
-		return (Transform)playerTransforms[indexNum];
+		return GetPlayerGameObject(indexNum).transform;
 	}
 
 	public Transform Spawn(GameObject anObject, Vector3 aPosition, Quaternion aRotation)
 	{
-		tempGO = Instantiate(anObject, aPosition, aRotation);
-		tempTrans = tempGO.transform;
+		tempGameObject = Object.Instantiate(anObject, aPosition, aRotation);
+		tempTrans = tempGameObject.transform;
 
 		return tempTrans;
 	}
 
 	public GameObject SpawnGameObject(GameObject anObject, Vector3 aPosition, Quaternion aRotation)
 	{
-		tempGO = Instantiate(anObject, aPosition, aRotation);
-		tempTrans = tempGO.transform;
+		tempGameObject = Object.Instantiate(anObject, aPosition, aRotation);
+		tempTrans = tempGameObject.transform;
 
-		return tempGO;
+		return tempGameObject;
 	}
 
 	public ArrayList GetAllSpawnedPlayers()

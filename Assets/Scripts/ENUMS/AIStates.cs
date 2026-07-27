@@ -1,6 +1,6 @@
 namespace AIStates
 {
-	public enum AIState
+	public enum AiState
 	{
 		moving_looking_for_target,
 		chasing_target,

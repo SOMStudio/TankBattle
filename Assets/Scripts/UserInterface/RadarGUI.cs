@@ -9,30 +9,26 @@ public class RadarGUI : MonoBehaviour
 	[SerializeField] private Texture radarBackgroundTexture;
 
 	private Vector2 drawCenterPosition;
+	
 	[SerializeField] private Vector2 drawOffset = new Vector2(5, 5);
-
 	[SerializeField] private Vector2 drawBlipOffset;
-
 	[SerializeField] private string defaultTagFilter = "enemy";
 	[SerializeField] private float mapScale = 0.3f;
 	[SerializeField] private float maxDist = 200;
 	[SerializeField] private float mapWidth = 256;
 	[SerializeField] private float mapHeight = 256;
-
 	[SerializeField] private bool rotateAroundPlayer;
+	[SerializeField] private Positioning drawPosition;
 
 	private ArrayList radarList;
 	private ArrayList textureList;
 
-	private Transform tempTRANS;
-	private Texture tempTEXTURE;
-
 	private float dist;
-	private float dx;
-	private float dz;
-	private float deltay;
-	private float bX;
-	private float bY;
+	private float distX;
+	private float distZ;
+	private float deltaY;
+	private float baseX;
+	private float baseY;
 	private Vector3 centerPos;
 	private Vector3 extPos;
 
@@ -43,8 +39,6 @@ public class RadarGUI : MonoBehaviour
 		BottomLeft,
 		BottomRight,
 	}
-
-	[SerializeField] private Positioning drawPosition;
 
 	private void Start()
 	{
@@ -78,9 +72,9 @@ public class RadarGUI : MonoBehaviour
 		radarList = new ArrayList();
 		textureList = new ArrayList();
 
-		GameObject[] gos = GameObject.FindGameObjectsWithTag(defaultTagFilter);
+		GameObject[] gameObjects = GameObject.FindGameObjectsWithTag(defaultTagFilter);
 
-		foreach (GameObject go in gos)
+		foreach (GameObject go in gameObjects)
 		{
 			AddBlipToList(go.transform, enemyBlipTexture);
 		}
@@ -102,17 +96,16 @@ public class RadarGUI : MonoBehaviour
 
 		for (int i = 0; i < radarList.Count; i++)
 		{
-			drawBlip((Transform)radarList[i], (Texture)textureList[i]);
+			DrawBlip((Transform)radarList[i], (Texture)textureList[i]);
 		}
 	}
 
-	private void drawBlip(Transform go, Texture aTexture)
+	private void DrawBlip(Transform go, Texture texture)
 	{
 		if (go == null) SetUpRadar();
 
 		try
 		{
-
 			centerPos = centerObject.position;
 			extPos = go.position;
 		}
@@ -123,29 +116,29 @@ public class RadarGUI : MonoBehaviour
 
 		dist = Vector3.Distance(centerPos, extPos);
 
-		dx = centerPos.x - extPos.x;
-		dz = centerPos.z - extPos.z;
+		distX = centerPos.x - extPos.x;
+		distZ = centerPos.z - extPos.z;
 
 		if (rotateAroundPlayer)
 		{
-			deltay = Mathf.Atan2(dx, dz) * Mathf.Rad2Deg - 270 - centerObject.eulerAngles.y;
+			deltaY = Mathf.Atan2(distX, distZ) * Mathf.Rad2Deg - 270 - centerObject.eulerAngles.y;
 		}
 		else
 		{
-			deltay = Mathf.Atan2(dx, dz) * Mathf.Rad2Deg - 270;
+			deltaY = Mathf.Atan2(distX, distZ) * Mathf.Rad2Deg - 270;
 		}
 
-		bX = dist * Mathf.Cos(deltay * Mathf.Deg2Rad);
-		bY = dist * Mathf.Sin(deltay * Mathf.Deg2Rad);
+		baseX = dist * Mathf.Cos(deltaY * Mathf.Deg2Rad);
+		baseY = dist * Mathf.Sin(deltaY * Mathf.Deg2Rad);
 
-		bX = bX * mapScale;
-		bY = bY * mapScale;
+		baseX = baseX * mapScale;
+		baseY = baseY * mapScale;
 
 		if (dist <= maxDist)
 		{
 			GUI.DrawTexture(
-				new Rect(drawCenterPosition.x + bX + drawBlipOffset.x, drawCenterPosition.y + bY + drawBlipOffset.y,
-					aTexture.width, aTexture.height), aTexture);
+				new Rect(drawCenterPosition.x + baseX + drawBlipOffset.x, drawCenterPosition.y + baseY + drawBlipOffset.y,
+					texture.width, texture.height), texture);
 		}
 	}
 

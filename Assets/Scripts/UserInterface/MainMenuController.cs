@@ -6,44 +6,44 @@ using UnityEditor;
 [AddComponentMenu("UI/Generic Main Menu")]
 public class MainMenuController : MonoBehaviour
 {
-	[SerializeField] private int whichMenu = 0;
+	[SerializeField] private int whichMenu;
 
-	[Header("Game Settings")] [SerializeField]
-	private GUISkin menuSkin;
+	[Header("Game Settings")]
+	[SerializeField] private GUISkin menuSkin;
 
 	[SerializeField] private string gameDisplayName = "- DEFAULT GAME NAME -";
 	[SerializeField] private string gamePrefsName = "DefaultGame";
 
-	[SerializeField] private float default_width = 720;
-	[SerializeField] private float default_height = 480;
+	[SerializeField] private float defaultWidth = 720;
+	[SerializeField] private float defaultHeight = 480;
 
-	[SerializeField] private float audioSFXSliderValue = 1;
+	[SerializeField] private float audioSfxSliderValue = 1;
 	[SerializeField] private float audioMusicSliderValue = 1;
 
 	[SerializeField] private float graphicsSliderValue = 6;
 	private int detailLevels = 6;
 
-	[Header("Def Scene")] [SerializeField] private string singleGameStartScene;
+	[Header("Def Scene")]
+	[SerializeField] private string singleGameStartScene;
 	[SerializeField] private string coopGameStartScene;
 
-	[Header("Level Manager")] [SerializeField]
-	private bool useLevelManagerToStartGame;
+	[Header("Level Manager")]
+	[SerializeField] private bool useLevelManagerToStartGame;
 
 	[SerializeField] private string[] gameLevels;
 	[SerializeField] private LevelManager levelManager;
 
 	[SerializeField] private bool isLoading;
 
-	[Header("Sound/Music")] [SerializeField]
-	private BaseSoundController soundManager;
-
+	[Header("Sound/Music")]
+	[SerializeField] private BaseSoundController soundManager;
 	[SerializeField] private BaseMusicController musicManager;
 
 	private void Start()
 	{
 		if (PlayerPrefs.HasKey(gamePrefsName + "_SFXVol"))
 		{
-			audioSFXSliderValue = PlayerPrefs.GetFloat(gamePrefsName + "_SFXVol");
+			audioSfxSliderValue = PlayerPrefs.GetFloat(gamePrefsName + "_SFXVol");
 		}
 		else
 		{
@@ -95,8 +95,8 @@ public class MainMenuController : MonoBehaviour
 
 	private void OnGUI()
 	{
-		float scaleX = Screen.width / default_width;
-		float scaleY = Screen.height / default_height;
+		float scaleX = Screen.width / defaultWidth;
+		float scaleY = Screen.height / defaultHeight;
 		GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, new Vector3(scaleX, scaleY, 1));
 
 		GUI.skin = menuSkin;
@@ -104,9 +104,8 @@ public class MainMenuController : MonoBehaviour
 		switch (whichMenu)
 		{
 			case 0:
-				GUI.BeginGroup(new Rect(default_width / 2 - 150, default_height / 2 - 250, 500, 500));
-
-
+				GUI.BeginGroup(new Rect(defaultWidth / 2 - 150, defaultHeight / 2 - 250, 500, 500));
+				
 				GUI.Label(new Rect(0, 50, 300, 50), gameDisplayName, "textarea");
 
 				if (GUI.Button(new Rect(0, 200, 300, 40), "START SINGLE", "button") && !isLoading)
@@ -165,7 +164,7 @@ public class MainMenuController : MonoBehaviour
 				GUI.EndGroup();
 				break;
 			case 1:
-				GUI.BeginGroup(new Rect(default_width / 2 - 150, default_height / 2 - 250, 500, 500));
+				GUI.BeginGroup(new Rect(defaultWidth / 2 - 150, defaultHeight / 2 - 250, 500, 500));
 
 				GUI.Label(new Rect(0, 50, 300, 50), "OPTIONS", "textarea");
 
@@ -187,7 +186,7 @@ public class MainMenuController : MonoBehaviour
 				GUI.EndGroup();
 				break;
 			case 2:
-				GUI.BeginGroup(new Rect(default_width / 2 - 150, default_height / 2 - 250, 500, 500));
+				GUI.BeginGroup(new Rect(defaultWidth / 2 - 150, defaultHeight / 2 - 250, 500, 500));
 
 				GUI.Label(new Rect(0, 50, 300, 50), "Are you sure you want to exit?", "textarea");
 
@@ -204,21 +203,21 @@ public class MainMenuController : MonoBehaviour
 				GUI.EndGroup();
 				break;
 			case 3:
-				GUI.BeginGroup(new Rect(default_width / 2 - 150, default_height / 2 - 250, 500, 500));
+				GUI.BeginGroup(new Rect(defaultWidth / 2 - 150, defaultHeight / 2 - 250, 500, 500));
 
 				GUI.Label(new Rect(0, 50, 300, 50), "AUDIO OPTIONS", "textarea");
 
 				GUI.Label(new Rect(0, 170, 300, 20), "SFX volume:");
-				float audioSFXSliderValue_new =
-					GUI.HorizontalSlider(new Rect(0, 200, 300, 50), audioSFXSliderValue, 0.0f, 1f);
+				float audioSfxSliderValueNew =
+					GUI.HorizontalSlider(new Rect(0, 200, 300, 50), audioSfxSliderValue, 0.0f, 1f);
 
 				GUI.Label(new Rect(0, 270, 300, 20), "Music volume:");
-				float audioMusicSliderValue_new =
+				float audioMusicSliderValueNew =
 					GUI.HorizontalSlider(new Rect(0, 300, 300, 50), audioMusicSliderValue, 0.0f, 1f);
 
-				if (audioSFXSliderValue_new != audioSFXSliderValue)
+				if (audioSfxSliderValueNew != audioSfxSliderValue)
 				{
-					audioSFXSliderValue = audioSFXSliderValue_new;
+					audioSfxSliderValue = audioSfxSliderValueNew;
 
 					if (soundManager != null)
 					{
@@ -228,9 +227,9 @@ public class MainMenuController : MonoBehaviour
 					}
 				}
 
-				if (audioMusicSliderValue_new != audioMusicSliderValue)
+				if (audioMusicSliderValueNew != audioMusicSliderValue)
 				{
-					audioMusicSliderValue = audioMusicSliderValue_new;
+					audioMusicSliderValue = audioMusicSliderValueNew;
 
 					if (musicManager != null)
 					{
@@ -249,7 +248,7 @@ public class MainMenuController : MonoBehaviour
 				GUI.EndGroup();
 				break;
 			case 4:
-				GUI.BeginGroup(new Rect(default_width / 2 - 150, default_height / 2 - 250, 500, 500));
+				GUI.BeginGroup(new Rect(defaultWidth / 2 - 150, defaultHeight / 2 - 250, 500, 500));
 
 				GUI.Label(new Rect(0, 50, 300, 50), "GRAPHICS OPTIONS", "textarea");
 
@@ -297,7 +296,7 @@ public class MainMenuController : MonoBehaviour
 
 	private void SaveOptionsPrefs()
 	{
-		PlayerPrefs.SetFloat(gamePrefsName + "_SFXVol", audioSFXSliderValue);
+		PlayerPrefs.SetFloat(gamePrefsName + "_SFXVol", audioSfxSliderValue);
 		PlayerPrefs.SetFloat(gamePrefsName + "_MusicVol", audioMusicSliderValue);
 		PlayerPrefs.SetFloat(gamePrefsName + "_GraphicsDetail", graphicsSliderValue);
 

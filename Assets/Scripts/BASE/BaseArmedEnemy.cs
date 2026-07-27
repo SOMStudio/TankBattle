@@ -2,31 +2,27 @@ using UnityEngine;
 using AIAttackStates;
 
 [AddComponentMenu("Base/AI Weapon Controller")]
-
 public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 {
-	[Header("Main value")] [SerializeField]
-	protected int pointsValue = 50;
-
+	[Header("Main value")]
+	[SerializeField] protected int pointsValue = 50;
 	[SerializeField] private int thisEnemyStrength = 1;
-	[SerializeField] private GameObject mesh_parentGO;
+	[SerializeField] private GameObject meshParentGameObject;
 
 	protected Renderer rendererToTestAgainst;
 
-	[Header("Fire value")] [SerializeField]
-	protected Standard_SlotWeaponController weaponControl;
-
-	[SerializeField] protected AIAttackState currentState = AIAttackState.random_fire;
+	[Header("Fire value")]
+	[SerializeField] protected Standard_SlotWeaponController weaponControl;
+	[SerializeField] protected AiAttackState currentState = AiAttackState.random_fire;
 	[SerializeField] private bool thisGameObjectShouldFire;
 	[SerializeField] private bool onlyFireWhenOnscreen;
 	[SerializeField] private float fireDelayTime = 1f;
 	[SerializeField] protected string tagOfTargetsToShootAt;
 
-	[Header("Player Manager")] [SerializeField]
-	protected BasePlayerManager myPlayerManager;
-
+	[Header("Managers")]
+	[SerializeField] protected BasePlayerManager myPlayerManager;
 	[SerializeField] protected BaseUserManager myDataManager;
-	[SerializeField] protected bool isBoss = false;
+	[SerializeField] protected bool isBoss;
 
 	protected int tempINT;
 
@@ -47,17 +43,17 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 
 		if (weaponControl == null)
 		{
-			weaponControl = myGO.GetComponent<Standard_SlotWeaponController>();
+			weaponControl = myGameObject.GetComponent<Standard_SlotWeaponController>();
 		}
 
 		if (rendererToTestAgainst == null)
 		{
-			rendererToTestAgainst = myGO.GetComponentInChildren<Renderer>();
+			rendererToTestAgainst = myGameObject.GetComponentInChildren<Renderer>();
 		}
 
 		if (myPlayerManager == null)
 		{
-			myPlayerManager = myGO.AddComponent<BasePlayerManager>();
+			myPlayerManager = myGameObject.AddComponent<BasePlayerManager>();
 		}
 
 		myDataManager = myPlayerManager.GetDataManager();
@@ -79,14 +75,14 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 
 			if (canFire)
 			{
-				if (currentState == AIAttackState.random_fire)
+				if (currentState == AiAttackState.random_fire)
 				{
 					if (Random.Range(0, 100) > 98)
 					{
 						doFire = true;
 					}
 				}
-				else if (currentState == AIAttackState.look_and_destroy)
+				else if (currentState == AiAttackState.look_and_destroy)
 				{
 					if (Physics.Raycast(myTransform.position, myTransform.forward, out rayHit))
 					{
@@ -122,7 +118,7 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 		}
 	}
 
-	public void SetAIState(AIAttackState val)
+	public void SetAIState(AiAttackState val)
 	{
 		currentState = val;
 	}

@@ -1,16 +1,15 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameController_Tank : BaseGameController
 {
-	[Header("Main Settings")] [SerializeField]
-	private string mainMenuSceneName = "menu_Tanks";
-
+	[Header("Main Settings")]
+	[SerializeField] private string mainMenuSceneName = "Menu";
 	[SerializeField] private float gameSpeed = 1;
 
-	[Header("Player Settings")] [SerializeField]
-	private GameObject[] playerPrefabList;
-
+	[Header("Player Settings")]
+	[SerializeField] private GameObject[] playerPrefabList;
 	[SerializeField] private Transform playerParent;
 	[SerializeField] private Transform[] startPoints;
 
@@ -23,14 +22,15 @@ public class GameController_Tank : BaseGameController
 	private PlayerTopDown_Tank thePlayerScript;
 	private PlayerTopDown_Tank focusPlayerScript;
 
-	private int numberOfPlayers;
+	private int countPlayers;
 
 	private UserManager_Tank mainPlayerDataManager1;
-	private GameObject playerGO1;
+	private GameObject playerGameObject;
 
 	[System.NonSerialized] public static GameController_Tank Instance;
 
-	[Header("Managers")] [SerializeField] private UI_Tank menuManager;
+	[Header("Managers")]
+	[SerializeField] private UI_Tank menuManager;
 	[SerializeField] private SpawnController_Tank spawnManager;
 	[SerializeField] private RadarGUI radarManager;
 	[SerializeField] private BaseSoundController soundManager;
@@ -80,20 +80,19 @@ public class GameController_Tank : BaseGameController
 
 		SpawnController.Instance.Restart();
 
-		numberOfPlayers = playerPrefabList.Length;
+		countPlayers = playerPrefabList.Length;
 		
-		Vector3[] playerStarts = new Vector3 [numberOfPlayers];
-		Quaternion[] playerRotations = new Quaternion [numberOfPlayers];
-		
+		Vector3[] playerStartPoints = new Vector3 [countPlayers];
+		Quaternion[] playerStartRotations = new Quaternion [countPlayers];
 
-		for (int i = 0; i < numberOfPlayers; i++)
+		for (int i = 0; i < countPlayers; i++)
 		{
-			playerStarts[i] = (Vector3)startPoints[i].position;
-			playerRotations[i] = (Quaternion)startPoints[i].rotation;
+			playerStartPoints[i] = startPoints[i].position;
+			playerStartRotations[i] = startPoints[i].rotation;
 		}
 
-		SpawnController.Instance.SetUpPlayers(playerPrefabList, playerStarts, playerRotations, playerParent,
-			numberOfPlayers);
+		SpawnController.Instance.SetUpPlayers(playerPrefabList, playerStartPoints, playerStartRotations, playerParent,
+			countPlayers);
 
 		playerTransforms = new ArrayList();
 		
@@ -101,17 +100,18 @@ public class GameController_Tank : BaseGameController
 
 		playerList = new ArrayList();
 
-		for (int i = 0; i < numberOfPlayers; i++)
+		for (int i = 0; i < countPlayers; i++)
 		{
 			Transform tempT = (Transform)playerTransforms[i];
 			PlayerTopDown_Tank tempController = tempT.GetComponent<PlayerTopDown_Tank>();
+			
 			playerList.Add(tempController);
 			tempController.Init();
 		}
 		
-		playerGO1 = SpawnController.Instance.GetPlayerGO(0);
+		playerGameObject = SpawnController.Instance.GetPlayerGameObject(0);
 		
-		thePlayerScript = (PlayerTopDown_Tank)playerGO1.GetComponent<PlayerTopDown_Tank>();
+		thePlayerScript = playerGameObject.GetComponent<PlayerTopDown_Tank>();
 		
 		thePlayerScript.SetID(0);
 		
@@ -119,23 +119,23 @@ public class GameController_Tank : BaseGameController
 		
 		focusPlayerScript = thePlayerScript;
 		
-		Transform aTarget = playerGO1.transform.Find("CamTarget");
+		Transform aTarget = playerGameObject.transform.Find("CamTarget");
 
 		if (aTarget != null)
 		{
-			Camera.main.SendMessage("SetTarget", aTarget);
+			Camera.main?.SendMessage("SetTarget", aTarget);
 		}
 		else
 		{
-			Camera.main.SendMessage("SetTarget", playerGO1.transform);
+			Camera.main?.SendMessage("SetTarget", playerGameObject.transform);
 		}
 		
-		radarManager.SetCenterObject(playerGO1.transform);
+		radarManager.SetCenterObject(playerGameObject.transform);
 	}
 
 	private void StartPlayer()
 	{
-		mainPlayerDataManager1 = playerGO1.GetComponent<PlayerManager_Tank>().DataManager_Tank;
+		mainPlayerDataManager1 = playerGameObject.GetComponent<PlayerManager_Tank>().DataManager_Tank;
 		
 		thePlayerScript.GameStart();
 	}
@@ -178,12 +178,12 @@ public class GameController_Tank : BaseGameController
 
 	public Transform GetMainPlayerTransform()
 	{
-		return playerGO1.transform;
+		return GetMainPlayerGameObject().transform;
 	}
 
-	public GameObject GetMainPlayerGO()
+	public GameObject GetMainPlayerGameObject()
 	{
-		return playerGO1;
+		return playerGameObject;
 	}
 
 	public void PlayerDied(int whichID)
@@ -195,7 +195,7 @@ public class GameController_Tank : BaseGameController
 
 	private void Exit()
 	{
-		Application.LoadLevel(mainMenuSceneName);
+		SceneManager.LoadScene(mainMenuSceneName);
 	}
 	
 	public void UpdateScoreP1(int aScore)

@@ -10,11 +10,11 @@ public class BaseUserManager : MonoBehaviour
 
 	protected bool isFinished;
 
-	[SerializeField] protected string playerName = "Anonim";
+	[SerializeField] protected string playerName = "Anonym";
 
 	public virtual void GetDefaultData()
 	{
-		playerName = "Anonim";
+		playerName = "Anonym";
 
 		score = 0;
 		level = 1;

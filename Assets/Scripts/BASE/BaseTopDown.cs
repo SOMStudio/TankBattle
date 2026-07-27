@@ -4,35 +4,35 @@ using CharacterStates;
 [AddComponentMenu("Base/Character/Third Person")]
 public class BaseTopDown : ExtendedCustomMonoBehaviour
 {
-	[Header("Main value")] [SerializeField]
-	private float walkSpeed = 2.0f;
-
+	[Header("Main value")]
+	[SerializeField] private float walkSpeed = 2.0f;
 	[SerializeField] private float runSpeed = 4.0f;
 	[SerializeField] private float speedSmoothing = 10.0f;
 	[SerializeField] private float rotateSpeed = 500.0f;
 	[SerializeField] private float runAfterSeconds = 3.0f;
 	[SerializeField] private bool moveDirectionally;
 
-	[Header("Animation")] [SerializeField] protected AnimationClip idleAnimation;
+	[Header("Animation")]
+	[SerializeField] protected AnimationClip idleAnimation;
 	[SerializeField] protected AnimationClip walkAnimation;
 	[SerializeField] protected float walkMaxAnimationSpeed = 0.75f;
 	[SerializeField] protected float runMaxAnimationSpeed = 1.0f;
-	[SerializeField] protected float walkTimeStart = 0.0f;
-	[SerializeField] protected Animation _animation;
+	[SerializeField] protected float walkTimeStart;
+	[SerializeField] protected Animation refAnimation;
 
-	private CharacterState _characterState;
+	private CharacterState characterState;
 	private Vector3 moveDirection = Vector3.zero;
 	private float moveSpeed;
 
-	[Header("Player Manager")] [SerializeField]
-	protected BasePlayerManager myPlayerController;
+	[Header("Player Manager")]
+	[SerializeField] protected BasePlayerManager myPlayerController;
 
-	protected Keyboard_Input default_input;
+	protected KeyboardInput defaultInput;
 
 	private CollisionFlags collisionFlags;
 
-	public float horz;
-	public float vert;
+	public float horizontal;
+	public float vertical;
 
 	private CharacterController controller;
 
@@ -47,21 +47,21 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 	{
 		moveDirection = transform.TransformDirection(Vector3.forward);
 
-		if (_animation == null)
-			_animation = GetComponent<Animation>();
+		if (refAnimation == null)
+			refAnimation = GetComponent<Animation>();
 
-		if (!_animation)
+		if (!refAnimation)
 			Debug.Log("The character you would like to control doesn't have animations. Moving her might look weird.");
 
 		if (!idleAnimation)
 		{
-			_animation = null;
+			refAnimation = null;
 			Debug.Log("No idle animation found. Turning off animations.");
 		}
 
 		if (!walkAnimation)
 		{
-			_animation = null;
+			refAnimation = null;
 			Debug.Log("No walk animation found. Turning off animations.");
 		}
 
@@ -83,14 +83,14 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 	{
 		base.Init();
 
-		if (!default_input)
+		if (!defaultInput)
 		{
-			default_input = myGO.AddComponent<Keyboard_Input>();
+			defaultInput = myGameObject.AddComponent<KeyboardInput>();
 		}
 
 		if (!myPlayerController)
 		{
-			myPlayerController = myGO.GetComponent<BasePlayerManager>();
+			myPlayerController = myGameObject.GetComponent<BasePlayerManager>();
 		}
 
 		if (myPlayerController != null)
@@ -104,8 +104,8 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 
 	protected virtual void GetInput()
 	{
-		horz = Mathf.Clamp(default_input.GetHorizontal(), -1, 1);
-		vert = Mathf.Clamp(default_input.GetVertical(), -1, 1);
+		horizontal = Mathf.Clamp(defaultInput.GetHorizontal(), -1, 1);
+		vertical = Mathf.Clamp(defaultInput.GetVertical(), -1, 1);
 	}
 
 	private void UpdateSmoothedMovementDirection()
@@ -122,8 +122,8 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 
 	private void UpdateDirectionalMovement()
 	{
-		targetDirection = horz * Vector3.right;
-		targetDirection += vert * Vector3.forward;
+		targetDirection = horizontal * Vector3.right;
+		targetDirection += vertical * Vector3.forward;
 
 		if (targetDirection != Vector3.zero)
 		{
@@ -136,17 +136,17 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 
 		targetSpeed = Mathf.Min(targetDirection.magnitude, 1.0f);
 
-		_characterState = CharacterState.Idle;
+		characterState = CharacterState.Idle;
 
 		if (Time.time - runAfterSeconds > walkTimeStart)
 		{
 			targetSpeed *= runSpeed;
-			_characterState = CharacterState.Running;
+			characterState = CharacterState.Running;
 		}
 		else
 		{
 			targetSpeed *= walkSpeed;
-			_characterState = CharacterState.Walking;
+			characterState = CharacterState.Walking;
 		}
 
 		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, curSmooth);
@@ -164,30 +164,30 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 
 	private void UpdateRotationMovement()
 	{
-		myTransform.Rotate(0, horz * rotateSpeed * Time.deltaTime, 0);
-		curSpeed = moveSpeed * vert;
+		myTransform.Rotate(0, horizontal * rotateSpeed * Time.deltaTime, 0);
+		curSpeed = moveSpeed * vertical;
 		controller.SimpleMove(myTransform.forward * curSpeed);
 
-		targetDirection = vert * myTransform.forward;
+		targetDirection = vertical * myTransform.forward;
 
-		float curSmooth = speedSmoothing * Time.deltaTime;
+		float currentSmooth = speedSmoothing * Time.deltaTime;
 
 		targetSpeed = Mathf.Min(targetDirection.magnitude, 1.0f);
 
-		_characterState = CharacterState.Idle;
+		characterState = CharacterState.Idle;
 
 		if (Time.time - runAfterSeconds > walkTimeStart)
 		{
 			targetSpeed *= runSpeed;
-			_characterState = CharacterState.Running;
+			characterState = CharacterState.Running;
 		}
 		else
 		{
 			targetSpeed *= walkSpeed;
-			_characterState = CharacterState.Walking;
+			characterState = CharacterState.Walking;
 		}
 
-		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, curSmooth);
+		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, currentSmooth);
 
 		if (moveSpeed < walkSpeed * 0.3f)
 			walkTimeStart = Time.time;
@@ -202,25 +202,25 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 
 		UpdateSmoothedMovementDirection();
 
-		if (_animation)
+		if (refAnimation)
 		{
 			if (controller.velocity.sqrMagnitude < 0.1f)
 			{
-				_animation.CrossFade(idleAnimation.name);
+				refAnimation.CrossFade(idleAnimation.name);
 			}
 			else
 			{
-				if (_characterState == CharacterState.Running)
+				if (characterState == CharacterState.Running)
 				{
-					_animation[walkAnimation.name].speed =
+					refAnimation[walkAnimation.name].speed =
 						Mathf.Clamp(controller.velocity.magnitude, 0.0f, runMaxAnimationSpeed);
-					_animation.CrossFade(walkAnimation.name);
+					refAnimation.CrossFade(walkAnimation.name);
 				}
-				else if (_characterState == CharacterState.Walking)
+				else if (characterState == CharacterState.Walking)
 				{
-					_animation[walkAnimation.name].speed =
+					refAnimation[walkAnimation.name].speed =
 						Mathf.Clamp(controller.velocity.magnitude, 0.0f, walkMaxAnimationSpeed);
-					_animation.CrossFade(walkAnimation.name);
+					refAnimation.CrossFade(walkAnimation.name);
 				}
 			}
 		}
@@ -238,6 +238,6 @@ public class BaseTopDown : ExtendedCustomMonoBehaviour
 
 	public bool IsMoving()
 	{
-		return Mathf.Abs(vert) + Mathf.Abs(horz) > 0.5f;
+		return Mathf.Abs(vertical) + Mathf.Abs(horizontal) > 0.5f;
 	}
 }

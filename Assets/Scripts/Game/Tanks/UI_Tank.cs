@@ -1,13 +1,11 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class UI_Tank : BaseUIDataManager
 {
 	[SerializeField] private int playerLivesDetail;
 
-	[Header("Message Texture")] [SerializeField]
-	private GameObject gameOverMessage;
-
+	[Header("Message Texture")]
+	[SerializeField] private GameObject gameOverMessage;
 	[SerializeField] private GameObject getReadyMessage;
 
 	[System.NonSerialized] public static UI_Tank Instance;
@@ -25,10 +23,10 @@ public class UI_Tank : BaseUIDataManager
 	private void OnGUI()
 	{
 		GUI.Label(new Rect(10, 10, 100, 50), "PLAYER 1");
-		GUI.Label(new Rect(10, 40, 100, 50), "SCORE " + player_score);
-		GUI.Label(new Rect(10, 70, 200, 50), "HIGH SCORE " + player_highscore);
+		GUI.Label(new Rect(10, 40, 100, 50), "SCORE " + playerScore);
+		GUI.Label(new Rect(10, 70, 200, 50), "HIGH SCORE " + playerHighScore);
 
-		GUI.Label(new Rect(10, 100, 100, 50), "LIVES " + player_lives);
+		GUI.Label(new Rect(10, 100, 100, 50), "LIVES " + playerLives);
 		GUI.Label(new Rect(10, 130, 100, 50), "LIVES % " + playerLivesDetail);
 	}
 

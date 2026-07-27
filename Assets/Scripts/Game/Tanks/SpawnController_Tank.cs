@@ -3,20 +3,14 @@
 public class SpawnController_Tank : MonoBehaviour {
 
 	[Header("Settings")]
-	[SerializeField]
-	private float timeBeforeFirstSpawn = 1f;
-	[SerializeField]
-	private int limitSpawnedObject = 10;
+	[SerializeField] private float timeBeforeFirstSpawn = 1f;
+	[SerializeField] private int limitSpawnedObject = 10;
 
 	[Header("Spawn")]
-	[SerializeField]
-	private GameObject[] spawnObjectPrefabs;
-	[SerializeField]
-	private GameObject[] spawnObjectPoints;
-	[SerializeField]
-	private Transform spawnParent;
-	[SerializeField]
-	private GameObject spawnParticle;
+	[SerializeField] private GameObject[] spawnObjectPrefabs;
+	[SerializeField] private GameObject[] spawnObjectPoints;
+	[SerializeField] private Transform spawnParent;
+	[SerializeField] private GameObject spawnParticle;
 
 	private int countSpawnedObject = 0;
 

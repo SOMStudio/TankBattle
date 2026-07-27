@@ -2,31 +2,31 @@ using UnityEngine;
 
 public class ArmedEnemy_Tank : BaseArmedEnemy
 {
-	[Header("Settings")] [SerializeField] private float thisEnemyDetaleStrange = 100;
-	[SerializeField] private float thisEnemyProtection = 1;
-
+	[Header("Settings")]
+	[SerializeField] private float detailedStrange = 100;
+	[SerializeField] private float protection = 1;
 	[SerializeField] private int contactDamage = 1;
 
-	private PlayerManager_Tank myPlayerManager_New;
-	private UserManager_Tank myDataManager_New;
+	private PlayerManager_Tank playerManager;
+	private UserManager_Tank userManager;
 
 	private bool isRespawning;
 
-	public void OnCollisionEnter(Collision collider)
+	public void OnCollisionEnter(Collision collision)
 	{
-		if (collider.gameObject.layer == 9 && !isRespawning)
+		if (collision.gameObject.layer == 9 && !isRespawning)
 		{
-			ProjectileController projManager = collider.gameObject.GetComponent<ProjectileController>();
+			ProjectileController projManager = collision.gameObject.GetComponent<ProjectileController>();
 			if (projManager)
 			{
-				float reduceHels = myDataManager_New.GetProtection() * projManager.OverrideDamageValue;
-				tempINT = int.Parse(collider.gameObject.name);
+				float reduceHealth = userManager.GetProtection() * projManager.OverrideDamageValue;
+				tempINT = int.Parse(collision.gameObject.name);
 
-				ReduceLife(reduceHels);
+				ReduceLife(reduceHealth);
 			}
 		}
 
-		if (collider.gameObject.layer == 8 && !isRespawning)
+		if (collision.gameObject.layer == 8 && !isRespawning)
 		{
 			TellGCEnemyDestroyed();
 
@@ -36,7 +36,7 @@ public class ArmedEnemy_Tank : BaseArmedEnemy
 			Destroy(gameObject);
 		}
 
-		if (collider.gameObject.layer == 20)
+		if (collision.gameObject.layer == 20)
 		{
 			TellGCEnemyDestroyed();
 
@@ -48,22 +48,22 @@ public class ArmedEnemy_Tank : BaseArmedEnemy
 	{
 		base.Init();
 
-		if (myPlayerManager_New == null)
+		if (playerManager == null)
 		{
-			myPlayerManager_New = (PlayerManager_Tank)myPlayerManager;
+			playerManager = (PlayerManager_Tank)myPlayerManager;
 
-			if (myPlayerManager_New)
-				myDataManager_New = (UserManager_Tank)myDataManager;
+			if (playerManager)
+				userManager = (UserManager_Tank)myDataManager;
 		}
 
-		myDataManager_New.SetDetailHealth(thisEnemyDetaleStrange);
-		myDataManager_New.SetProtection(thisEnemyProtection);
+		userManager.SetDetailHealth(detailedStrange);
+		userManager.SetProtection(protection);
 
-		BaseAIController aControl = (BaseAIController)gameObject.GetComponent<BaseAIController>();
+		BaseAIController aControl = gameObject.GetComponent<BaseAIController>();
 
 		aControl.SetChaseTarget(GameController_Tank.Instance.GetMainPlayerTransform());
 
-		aControl.SetAIState(AIStates.AIState.chasing_target);
+		aControl.SetAIState(AIStates.AiState.chasing_target);
 
 		GameController_Tank.Instance.AddEnemyToRadar(myTransform);
 	}
@@ -94,9 +94,9 @@ public class ArmedEnemy_Tank : BaseArmedEnemy
 
 	private void ReduceLife(float val)
 	{
-		myDataManager_New.ReduceDetailHealth(val);
+		userManager.ReduceDetailHealth(val);
 
-		if (myDataManager_New.GetDetailHealth() < 0)
+		if (userManager.GetDetailHealth() < 0)
 		{
 			LostLife();
 		}
@@ -104,9 +104,9 @@ public class ArmedEnemy_Tank : BaseArmedEnemy
 
 	private void LostLife()
 	{
-		myDataManager_New.ReduceHealth(1);
+		userManager.ReduceHealth(1);
 
-		if (myDataManager_New.GetHealth() == 0)
+		if (userManager.GetHealth() == 0)
 		{
 			TellGCEnemyDestroyed();
 

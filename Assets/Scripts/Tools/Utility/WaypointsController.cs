@@ -1,16 +1,16 @@
 using UnityEngine;
 
 [AddComponentMenu("Utility/Waypoints Controller")]
-public class Waypoints_Controller : MonoBehaviour
+public class WaypointsController : MonoBehaviour
 {
 	[SerializeField] private Transform[] transforms;
 	[SerializeField] private bool closed = true;
-	[SerializeField] private bool shouldReverse = false;
+	[SerializeField] private bool shouldReverse;
 
 	private Vector3 firstPoint;
 	private float distance;
-	private Transform TEMPtrans;
-	private int TEMPindex;
+	private Transform tempTransform;
+	private int tempIndex;
 	private int totalTransforms;
 
 	private Vector3 diff;
@@ -36,23 +36,23 @@ public class Waypoints_Controller : MonoBehaviour
 		if (totalTransforms < 2)
 			return;
 
-		TEMPtrans = (Transform)transforms[0];
-		lastPos = TEMPtrans.position;
+		tempTransform = transforms[0];
+		lastPos = tempTransform.position;
 
-		pointT = (Transform)transforms[0];
+		pointT = transforms[0];
 
 		firstPoint = lastPos;
 
 		for (int i = 1; i < totalTransforms; i++)
 		{
-			TEMPtrans = (Transform)transforms[i];
-			if (TEMPtrans == null)
+			tempTransform = transforms[i];
+			if (tempTransform == null)
 			{
 				GetTransforms();
 				return;
 			}
 
-			currentPos = TEMPtrans.position;
+			currentPos = tempTransform.position;
 
 			Gizmos.color = Color.green;
 			Gizmos.DrawSphere(currentPos, 2);
@@ -64,7 +64,7 @@ public class Waypoints_Controller : MonoBehaviour
 
 			lastPos = currentPos;
 
-			pointT = (Transform)transforms[i];
+			pointT = transforms[i];
 		}
 
 		if (closed)
@@ -106,29 +106,30 @@ public class Waypoints_Controller : MonoBehaviour
 
 		distance = Mathf.Infinity;
 
-		for (int i = 0; i < transforms.Length; i++)
-		{
-			TEMPtrans = (Transform)transforms[i];
-
-			diff = (TEMPtrans.position - fromPos);
-			curDistance = diff.sqrMagnitude;
-
-			if (curDistance < distance)
+		if (transforms != null)
+			for (int i = 0; i < transforms.Length; i++)
 			{
-				if (Mathf.Abs(TEMPtrans.position.y - fromPos.y) < maxRange)
+				tempTransform = transforms[i];
+
+				diff = (tempTransform.position - fromPos);
+				curDistance = diff.sqrMagnitude;
+
+				if (curDistance < distance)
 				{
-					closest = TEMPtrans;
+					if (Mathf.Abs(tempTransform.position.y - fromPos.y) < maxRange)
+					{
+						closest = tempTransform;
 
-					TEMPindex = i;
+						tempIndex = i;
 
-					distance = curDistance;
+						distance = curDistance;
+					}
 				}
 			}
-		}
 
 		if (closest)
 		{
-			return TEMPindex;
+			return tempIndex;
 		}
 		else
 		{
@@ -148,18 +149,18 @@ public class Waypoints_Controller : MonoBehaviour
 
 		for (int i = 0; i < totalTransforms; i++)
 		{
-			TEMPtrans = (Transform)transforms[i];
+			tempTransform = transforms[i];
 
-			diff = (TEMPtrans.position - fromPos);
+			diff = (tempTransform.position - fromPos);
 			curDistance = diff.sqrMagnitude;
 
-			if (curDistance < distance && TEMPtrans != exceptThis)
+			if (curDistance < distance && tempTransform != exceptThis)
 			{
-				if (Mathf.Abs(TEMPtrans.position.y - fromPos.y) < maxRange)
+				if (Mathf.Abs(tempTransform.position.y - fromPos.y) < maxRange)
 				{
-					closest = TEMPtrans;
+					closest = tempTransform;
 
-					TEMPindex = i;
+					tempIndex = i;
 
 					distance = curDistance;
 				}
@@ -168,7 +169,7 @@ public class Waypoints_Controller : MonoBehaviour
 
 		if (closest)
 		{
-			return TEMPindex;
+			return tempIndex;
 		}
 		else
 		{
@@ -195,7 +196,9 @@ public class Waypoints_Controller : MonoBehaviour
 		if (index > totalTransforms - 1)
 			return null;
 
-		return transforms[index];
+		if (transforms != null) return transforms[index];
+		
+		return null;
 	}
 
 	public int GetTotal()

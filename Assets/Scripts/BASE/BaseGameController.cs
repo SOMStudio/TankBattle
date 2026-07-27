@@ -2,13 +2,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [AddComponentMenu("Base/GameController")]
-
 public class BaseGameController : MonoBehaviour
 {
-	bool paused;
+	private bool paused;
 
-	[SerializeField]
-	protected GameObject explosionPrefab;
+	[SerializeField] protected GameObject explosionPrefab;
 	
 	public virtual void PlayerLostLife ()
 	{
@@ -49,14 +47,9 @@ public class BaseGameController : MonoBehaviour
         get => paused;
         set
         {
-            paused = value;
+	        paused = value;
 
-			if (paused)
-			{
-                Time.timeScale = 0f;
-			} else {
-				Time.timeScale = 1f;
-            }
+	        Time.timeScale = paused ? 0f : 1f;
         }
     }
 	

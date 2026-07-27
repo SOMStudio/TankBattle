@@ -3,54 +3,52 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-	[SerializeField]
-	private string[] levelNames;
-	[SerializeField]
-	private int gameLevelNum;
+	[SerializeField] private string[] levelNames;
+	[SerializeField] private int gameLevelNum;
 
-	[System.NonSerialized]
-	public static LevelManager Instance;
+	[System.NonSerialized] public static LevelManager Instance;
 
-	private void Awake ()
+	private void Awake()
 	{
 		if (Instance == null)
 			Instance = this;
 		else
-			Destroy (this);
+			Destroy(this);
 	}
 
-	private void Start ()
+	private void Start()
 	{
-		DontDestroyOnLoad (this.gameObject);
+		DontDestroyOnLoad(gameObject);
 	}
-	
-	public string[] LevelNames {
+
+	public string[] LevelNames
+	{
 		get => levelNames;
 		set => levelNames = value;
 	}
 
-	public void LoadLevel( string sceneName )
+	public void LoadLevel(string sceneName)
 	{
-		SceneManager.LoadScene ( sceneName );
+		SceneManager.LoadScene(sceneName);
 	}
-		
+
 	public void ResetGame()
 	{
 		gameLevelNum = 0;
 	}
-	
+
 	public void GoNextLevel()
 	{
-		if( gameLevelNum >= levelNames.Length )
+		if (gameLevelNum >= levelNames.Length)
 			gameLevelNum = 0;
-		
-		LoadLevel( gameLevelNum );
-		
+
+		LoadLevel(gameLevelNum);
+
 		gameLevelNum++;
 	}
-	
-	private void LoadLevel( int indexNum )
+
+	private void LoadLevel(int indexNum)
 	{
-		LoadLevel( levelNames[indexNum] );
+		LoadLevel(levelNames[indexNum]);
 	}
 }

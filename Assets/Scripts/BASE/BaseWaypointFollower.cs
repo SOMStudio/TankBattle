@@ -1,42 +1,43 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [AddComponentMenu("Base/BaseWaypointFollower")]
 public class BaseWaypointFollower : ExtendedCustomMonoBehaviour
 {
-	[Header("AI Controller")] [SerializeField]
-	private BaseAIController AIController;
+	[Header("AI Controller")]
+	[SerializeField] private BaseAIController aiController;
 
 	public override void Init()
 	{
 		base.Init();
 
-		AIController = myGO.GetComponent<BaseAIController>();
+		aiController = myGameObject.GetComponent<BaseAIController>();
 
-		if (AIController == null)
-			AIController = myGO.AddComponent<BaseAIController>();
+		if (aiController == null)
+			aiController = myGameObject.AddComponent<BaseAIController>();
 
-		AIController.Init();
+		aiController.Init();
 
-		AIController.SetAIControl(true);
+		aiController.SetAIControl(true);
 
-		AIController.SetAIState(AIStates.AIState.translate_along_waypoint_path);
+		aiController.SetAIState(AIStates.AiState.translate_along_waypoint_path);
 
 		didInit = true;
 	}
 
-	public virtual void SetAIWayController(Waypoints_Controller aWaypointControl)
+	public virtual void SetAIWayController(WaypointsController aWaypointControl)
 	{
-		if (AIController == null)
+		if (aiController == null)
 			Init();
 
-		AIController.SetWayController(aWaypointControl);
+		aiController.SetWayController(aWaypointControl);
 	}
 
 	public virtual void ClearAIWayController()
 	{
-		if (AIController == null)
+		if (aiController == null)
 			Init();
 
-		AIController.ClearWayController();
+		aiController.ClearWayController();
 	}
 }

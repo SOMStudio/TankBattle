@@ -4,21 +4,19 @@ using System.Collections;
 [AddComponentMenu("Base/Weapon Controller")]
 public class BaseWeaponController : MonoBehaviour
 {
-	[Header("Base")] [SerializeField] protected GameObject[] weapons;
-
+	[Header("Base")]
+	[SerializeField] protected GameObject[] weapons;
 	[SerializeField] protected int selectedWeaponSlot;
 	[SerializeField] protected int lastSelectedWeaponSlot;
-
 	[SerializeField] protected Vector3 offsetWeaponSpawnPosition;
-
 	[SerializeField] protected Transform forceParent;
 
 	private ArrayList weaponSlots;
 	private ArrayList weaponScripts;
-	private BaseWeaponScript TEMPWeapon;
-	private Vector3 TEMPvector3;
-	private Quaternion TEMProtation;
-	private GameObject TEMPgameObject;
+	private BaseWeaponScript tempWeapon;
+	private Vector3 tempVector3;
+	private Quaternion tempRotation;
+	private GameObject tempGameObject;
 
 	private Transform myTransform;
 	private int ownerNum;
@@ -49,24 +47,24 @@ public class BaseWeaponController : MonoBehaviour
 			forceParent = myTransform;
 		}
 
-		TEMPvector3 = forceParent.position;
-		TEMProtation = forceParent.rotation;
+		tempVector3 = forceParent.position;
+		tempRotation = forceParent.rotation;
 
 		for (int i = 0; i < weapons.Length; i++)
 		{
-			TEMPgameObject = (GameObject)Instantiate(weapons[i], TEMPvector3 + offsetWeaponSpawnPosition, TEMProtation);
+			tempGameObject = Instantiate(weapons[i], tempVector3 + offsetWeaponSpawnPosition, tempRotation);
 
-			TEMPgameObject.transform.parent = forceParent;
-			TEMPgameObject.layer = forceParent.gameObject.layer;
-			TEMPgameObject.transform.position = forceParent.position;
-			TEMPgameObject.transform.rotation = forceParent.rotation;
+			tempGameObject.transform.parent = forceParent;
+			tempGameObject.layer = forceParent.gameObject.layer;
+			tempGameObject.transform.position = forceParent.position;
+			tempGameObject.transform.rotation = forceParent.rotation;
 
-			weaponSlots.Add(TEMPgameObject);
+			weaponSlots.Add(tempGameObject);
 
-			TEMPWeapon = TEMPgameObject.GetComponent<BaseWeaponScript>();
-			weaponScripts.Add(TEMPWeapon);
+			tempWeapon = tempGameObject.GetComponent<BaseWeaponScript>();
+			weaponScripts.Add(tempWeapon);
 
-			TEMPgameObject.SetActive(false);
+			tempGameObject.SetActive(false);
 		}
 
 		SetWeaponSlot(0);
@@ -148,12 +146,12 @@ public class BaseWeaponController : MonoBehaviour
 		if (weaponScripts.Count == 0)
 			return;
 
-		TEMPWeapon = (BaseWeaponScript)weaponScripts[selectedWeaponSlot];
+		tempWeapon = (BaseWeaponScript)weaponScripts[selectedWeaponSlot];
 
-		TEMPWeapon.Disable();
+		tempWeapon.Disable();
 
-		TEMPgameObject = (GameObject)weaponSlots[selectedWeaponSlot];
-		TEMPgameObject.SetActive(false);
+		tempGameObject = (GameObject)weaponSlots[selectedWeaponSlot];
+		tempGameObject.SetActive(false);
 	}
 
 	public virtual void EnableCurrentWeapon()
@@ -161,12 +159,12 @@ public class BaseWeaponController : MonoBehaviour
 		if (weaponScripts.Count == 0)
 			return;
 
-		TEMPWeapon = (BaseWeaponScript)weaponScripts[selectedWeaponSlot];
+		tempWeapon = (BaseWeaponScript)weaponScripts[selectedWeaponSlot];
 
-		TEMPWeapon.Enable();
+		tempWeapon.Enable();
 
-		TEMPgameObject = (GameObject)weaponSlots[selectedWeaponSlot];
-		TEMPgameObject.SetActive(true);
+		tempGameObject = (GameObject)weaponSlots[selectedWeaponSlot];
+		tempGameObject.SetActive(true);
 	}
 
 	public virtual void Fire()
@@ -177,13 +175,13 @@ public class BaseWeaponController : MonoBehaviour
 		if (weaponScripts.Count == 0)
 			return;
 
-		TEMPWeapon = (BaseWeaponScript)weaponScripts[selectedWeaponSlot];
+		tempWeapon = (BaseWeaponScript)weaponScripts[selectedWeaponSlot];
 
 		theDir = transform.forward;
 
 		if (useForceVectorDirection)
 			theDir = forceVector;
 
-		TEMPWeapon.Fire(theDir, ownerNum);
+		tempWeapon.Fire(theDir, ownerNum);
 	}
 }

@@ -1,45 +1,38 @@
 using UnityEngine;
 
-[AddComponentMenu("Base/A Weapon Script")]
-public class BaseWeaponScript : MonoBehaviour
+[AddComponentMenu("Base/Base Weapon Script")]
+public class BaseWeaponScript : ExtendedCustomMonoBehaviour
 {
 	private bool canFire;
 
-	[Header("Ammo")] [SerializeField] protected int ammo = 100;
+	[Header("Ammo")]
+	[SerializeField] protected int ammo = 100;
 	[SerializeField] protected int maxAmmo = 100;
 
 	[SerializeField] protected bool isInfiniteAmmo;
 	[SerializeField] protected Collider parentCollider;
 
 	private Vector3 fireVector;
-	private Transform myTransform;
 	private int myLayer;
 
-	[Header("Projectile")] [SerializeField]
-	protected GameObject projectileGO;
-
+	[Header("Projectile")]
+	[SerializeField] protected GameObject projectilePrefab;
 	[SerializeField] protected Vector3 spawnPosOffset;
 	[SerializeField] protected float forwardOffset = 1.5f;
 	[SerializeField] protected float reloadTime = 0.2f;
 	[SerializeField] protected float projectileSpeed = 10f;
 	[SerializeField] protected bool inheritVelocity;
 
-	private Transform theProjectile;
-	private GameObject theProjectileGO;
+	private Transform projectileTransform;
+	private GameObject projectileGameObject;
 	private bool isLoaded;
 	private ProjectileController theProjectileController;
-
-	public virtual void Start()
+	
+	public override void Init()
 	{
-		Init();
-	}
-
-	public virtual void Init()
-	{
-		myTransform = transform;
-
-		myLayer = gameObject.layer;
-
+		base.Init();
+		
+		myLayer = myGameObject.layer;
 		Reloaded();
 	}
 
@@ -86,22 +79,22 @@ public class BaseWeaponScript : MonoBehaviour
 
 	public virtual void FireProjectile(Vector3 fireDirection, int ownerID)
 	{
-		theProjectile = MakeProjectile(ownerID);
+		projectileTransform = MakeProjectile(ownerID);
 
-		theProjectile.LookAt(theProjectile.position + fireDirection);
+		projectileTransform.LookAt(projectileTransform.position + fireDirection);
 
-		Rigidbody rb = theProjectile.GetComponent<Rigidbody>();
+		Rigidbody rb = projectileTransform.GetComponent<Rigidbody>();
 		rb.velocity = fireDirection * projectileSpeed;
 	}
 
 	public virtual Transform MakeProjectile(int ownerID)
 	{
-		theProjectile = SpawnController.Instance.Spawn(projectileGO,
+		projectileTransform = SpawnController.Instance.Spawn(projectilePrefab,
 			myTransform.position + spawnPosOffset + (myTransform.forward * forwardOffset), myTransform.rotation);
-		theProjectileGO = theProjectile.gameObject;
-		theProjectileGO.layer = myLayer;
+		projectileGameObject = projectileTransform.gameObject;
+		projectileGameObject.layer = myLayer;
 
-		theProjectileController = theProjectileGO.GetComponent<ProjectileController>();
+		theProjectileController = projectileGameObject.GetComponent<ProjectileController>();
 
 		theProjectileController.SetOwnerType(ownerID);
 
@@ -109,9 +102,9 @@ public class BaseWeaponScript : MonoBehaviour
 
 		if (parentCollider != null)
 		{
-			Physics.IgnoreCollision(theProjectile.GetComponent<Collider>(), parentCollider);
+			Physics.IgnoreCollision(projectileTransform.GetComponent<Collider>(), parentCollider);
 		}
 
-		return theProjectile;
+		return projectileTransform;
 	}
 }
