@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SpawnController
+public class SpawnTool
 {
 	private ArrayList playerTransforms;
 	private ArrayList playerGameObjects;
@@ -13,9 +13,9 @@ public class SpawnController
 	private Vector3[] startPositions;
 	private Quaternion[] startRotations;
 
-	private static SpawnController instance;
+	private static SpawnTool instance;
 
-	private SpawnController()
+	private SpawnTool()
 	{
 		if (instance != null)
 		{
@@ -26,13 +26,13 @@ public class SpawnController
 		instance = this;
 	}
 
-	public static SpawnController Instance
+	public static SpawnTool Instance
 	{
 		get
 		{
 			if (instance == null)
 			{
-				instance = new SpawnController();
+				instance = new SpawnTool();
 			}
 
 			return instance;

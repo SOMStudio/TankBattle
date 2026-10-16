@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class UserManager_Tank : BaseUserManager {
+public class UserManager : BaseUserManager {
 
 	[SerializeField] private float detailedHealth;
 	[SerializeField] private float protection;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UI_Tank : BaseUIDataManager
+public class UserInterface : BaseUIDataManager
 {
 	[SerializeField] private int playerLivesDetail;
 
@@ -8,7 +8,7 @@ public class UI_Tank : BaseUIDataManager
 	[SerializeField] private GameObject gameOverMessage;
 	[SerializeField] private GameObject getReadyMessage;
 
-	[System.NonSerialized] public static UI_Tank Instance;
+	[System.NonSerialized] public static UserInterface Instance;
 
 	private void Awake()
 	{

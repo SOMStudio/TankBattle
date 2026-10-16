@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[AddComponentMenu("Common/Weapons/Standard Slot Controller")]
-public class Standard_SlotWeaponController : BaseWeaponController
+[AddComponentMenu("Common/Weapons/Slot Weapon Controller")]
+public class SlotWeaponController : BaseWeaponController
 {
 	[Header("Settings")]
 	[SerializeField] private bool allowWeaponSwitchKeys = true;

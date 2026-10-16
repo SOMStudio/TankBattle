@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class GameController_Tank : BaseGameController
+public class GameController : BaseGameController
 {
 	[Header("Main Settings")]
 	[SerializeField] private string mainMenuSceneName = "Menu";
@@ -19,19 +19,19 @@ public class GameController_Tank : BaseGameController
 	private ArrayList playerList;
 	private ArrayList playerTransforms;
 
-	private PlayerTopDown_Tank thePlayerScript;
-	private PlayerTopDown_Tank focusPlayerScript;
+	private PlayerTopDown thePlayerScript;
+	private PlayerTopDown focusPlayerScript;
 
 	private int countPlayers;
 
-	private UserManager_Tank mainPlayerDataManager1;
+	private UserManager mainPlayerDataManager1;
 	private GameObject playerGameObject;
 
-	[System.NonSerialized] public static GameController_Tank Instance;
+	[System.NonSerialized] public static GameController Instance;
 
 	[Header("Managers")]
-	[SerializeField] private UI_Tank menuManager;
-	[SerializeField] private SpawnController_Tank spawnManager;
+	[SerializeField] private UserInterface menuManager;
+	[SerializeField] private SpawnController spawnManager;
 	[SerializeField] private RadarGUI radarManager;
 	[SerializeField] private BaseSoundController soundManager;
 
@@ -65,7 +65,7 @@ public class GameController_Tank : BaseGameController
 	{
 		if (!menuManager)
 		{
-			menuManager = UI_Tank.Instance;
+			menuManager = UserInterface.Instance;
 		}
 
 		if (!soundManager)
@@ -78,7 +78,7 @@ public class GameController_Tank : BaseGameController
 	{
 		Invoke(nameof(StartPlayer), 1);
 
-		SpawnController.Instance.Restart();
+		SpawnTool.Instance.Restart();
 
 		countPlayers = playerPrefabList.Length;
 		
@@ -91,27 +91,27 @@ public class GameController_Tank : BaseGameController
 			playerStartRotations[i] = startPoints[i].rotation;
 		}
 
-		SpawnController.Instance.SetUpPlayers(playerPrefabList, playerStartPoints, playerStartRotations, playerParent,
+		SpawnTool.Instance.SetUpPlayers(playerPrefabList, playerStartPoints, playerStartRotations, playerParent,
 			countPlayers);
 
 		playerTransforms = new ArrayList();
 		
-		playerTransforms = SpawnController.Instance.GetAllSpawnedPlayers();
+		playerTransforms = SpawnTool.Instance.GetAllSpawnedPlayers();
 
 		playerList = new ArrayList();
 
 		for (int i = 0; i < countPlayers; i++)
 		{
 			Transform tempT = (Transform)playerTransforms[i];
-			PlayerTopDown_Tank tempController = tempT.GetComponent<PlayerTopDown_Tank>();
+			PlayerTopDown tempController = tempT.GetComponent<PlayerTopDown>();
 			
 			playerList.Add(tempController);
 			tempController.Init();
 		}
 		
-		playerGameObject = SpawnController.Instance.GetPlayerGameObject(0);
+		playerGameObject = SpawnTool.Instance.GetPlayerGameObject(0);
 		
-		thePlayerScript = playerGameObject.GetComponent<PlayerTopDown_Tank>();
+		thePlayerScript = playerGameObject.GetComponent<PlayerTopDown>();
 		
 		thePlayerScript.SetID(0);
 		
@@ -135,7 +135,7 @@ public class GameController_Tank : BaseGameController
 
 	private void StartPlayer()
 	{
-		mainPlayerDataManager1 = playerGameObject.GetComponent<PlayerManager_Tank>().DataManager_Tank;
+		mainPlayerDataManager1 = playerGameObject.GetComponent<PlayerManager>().DataManager;
 		
 		thePlayerScript.GameStart();
 	}
@@ -171,7 +171,7 @@ public class GameController_Tank : BaseGameController
 		radarManager.RemoveEnemyBlip(aTransform);
 	}
 
-	public PlayerTopDown_Tank GetMainPlayerScript()
+	public PlayerTopDown GetMainPlayerScript()
 	{
 		return focusPlayerScript;
 	}

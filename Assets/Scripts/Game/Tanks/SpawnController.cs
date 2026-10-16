@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class SpawnController_Tank : MonoBehaviour {
+public class SpawnController : MonoBehaviour {
 
 	[Header("Settings")]
 	[SerializeField] private float timeBeforeFirstSpawn = 1f;
@@ -15,7 +15,7 @@ public class SpawnController_Tank : MonoBehaviour {
 	private int countSpawnedObject = 0;
 
 	[System.NonSerialized]
-	public static SpawnController_Tank Instance;
+	public static SpawnController Instance;
 
 	private void Awake() {
 		Init ();
@@ -55,13 +55,13 @@ public class SpawnController_Tank : MonoBehaviour {
 				GameObject pointSp = spawnObjectPoints [numPoint];
 
 				if (objectSp != null && pointSp != null) {
-					var enemyTr = SpawnController.Instance.Spawn (objectSp, pointSp.transform.position, pointSp.transform.rotation);
+					var enemyTr = SpawnTool.Instance.Spawn (objectSp, pointSp.transform.position, pointSp.transform.rotation);
 					
 					if (spawnParent != null)
 						enemyTr.parent = spawnParent;
 					
 					if (spawnParticle != null) {
-						SpawnController.Instance.Spawn (spawnParticle, pointSp.transform.position, pointSp.transform.rotation);
+						SpawnTool.Instance.Spawn (spawnParticle, pointSp.transform.position, pointSp.transform.rotation);
 					}
 
 					countSpawnedObject++;

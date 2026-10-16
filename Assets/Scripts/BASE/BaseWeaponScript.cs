@@ -89,7 +89,7 @@ public class BaseWeaponScript : ExtendedCustomMonoBehaviour
 
 	public virtual Transform MakeProjectile(int ownerID)
 	{
-		projectileTransform = SpawnController.Instance.Spawn(projectilePrefab,
+		projectileTransform = SpawnTool.Instance.Spawn(projectilePrefab,
 			myTransform.position + spawnPosOffset + (myTransform.forward * forwardOffset), myTransform.rotation);
 		projectileGameObject = projectileTransform.gameObject;
 		projectileGameObject.layer = myLayer;

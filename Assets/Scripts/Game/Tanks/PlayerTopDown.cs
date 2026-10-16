@@ -1,18 +1,18 @@
 using UnityEngine;
 
-public class PlayerTopDown_Tank : BaseTopDown
+public class PlayerTopDown : BaseTopDown
 {
 	private bool isInvulnerable;
 	private bool isRespawning;
 
 	[Header("Managers")]
-	[SerializeField] private PlayerManager_Tank myPlayerManager;
-	[SerializeField] private UserManager_Tank myDataManager;
+	[SerializeField] private PlayerManager myPlayerManager;
+	[SerializeField] private UserManager myDataManager;
 
 	private bool godMode = false;
 
 	[Header("Weapon")]
-	[SerializeField] private Standard_SlotWeaponController weaponControl;
+	[SerializeField] private SlotWeaponController weaponControl;
 	[SerializeField] private bool canFire;
 	
 	[SerializeField] private bool isFinished;
@@ -20,7 +20,7 @@ public class PlayerTopDown_Tank : BaseTopDown
 	private void OnCollisionEnter(Collision collision)
 	{
 		if (collision.gameObject.layer == 10 && !isRespawning && !isInvulnerable) {
-			ArmedEnemy_Tank enemyManager = collision.gameObject.GetComponent<ArmedEnemy_Tank> ();
+			ArmedEnemy enemyManager = collision.gameObject.GetComponent<ArmedEnemy> ();
 			if (enemyManager) {
 				float reduceHels = myDataManager.GetProtection () * enemyManager.GetContactDamage ();
 
@@ -41,12 +41,12 @@ public class PlayerTopDown_Tank : BaseTopDown
 		
 		canControl = false;
 		
-		weaponControl = myGameObject.GetComponent<Standard_SlotWeaponController> ();
+		weaponControl = myGameObject.GetComponent<SlotWeaponController> ();
 		
 		if (myPlayerManager == null)
-			myPlayerManager = myGameObject.GetComponent<PlayerManager_Tank> ();
+			myPlayerManager = myGameObject.GetComponent<PlayerManager> ();
 		
-		myDataManager = myPlayerManager.DataManager_Tank;
+		myDataManager = myPlayerManager.DataManager;
 		myDataManager.SetName ("Player");
 		myDataManager.SetHealth (3);
 		myDataManager.SetDetailHealth (100);
@@ -54,8 +54,8 @@ public class PlayerTopDown_Tank : BaseTopDown
 		
 		isFinished = false;
 		
-		GameController_Tank.Instance.UpdateLivesP1 (myDataManager.GetHealth ());
-		GameController_Tank.Instance.UpdateLivesDetailP1 (myDataManager.GetDetailHealth ());
+		GameController.Instance.UpdateLivesP1 (myDataManager.GetHealth ());
+		GameController.Instance.UpdateLivesDetailP1 (myDataManager.GetDetailHealth ());
 	}
 	
 	protected override void GetInput()
@@ -84,7 +84,7 @@ public class PlayerTopDown_Tank : BaseTopDown
 
 	public void PlayerFinished()
 	{
-		GameController_Tank.Instance.PlayerDied (id);
+		GameController.Instance.PlayerDied (id);
 
 		isFinished = true;
 	}
@@ -93,11 +93,11 @@ public class PlayerTopDown_Tank : BaseTopDown
 		myDataManager.ReduceDetailHealth (val);
 
 		if (myDataManager.GetDetailHealth () < 0) {
-			GameController_Tank.Instance.UpdateLivesDetailP1(0);
+			GameController.Instance.UpdateLivesDetailP1(0);
 
 			LostLife ();
 		} else {
-			GameController_Tank.Instance.UpdateLivesDetailP1(myDataManager.GetDetailHealth());
+			GameController.Instance.UpdateLivesDetailP1(myDataManager.GetDetailHealth());
 		}
 	}
 
@@ -105,11 +105,11 @@ public class PlayerTopDown_Tank : BaseTopDown
 	{
 		isRespawning = true;
 		
-		GameController_Tank.Instance.PlayerHit (myTransform);
+		GameController.Instance.PlayerHit (myTransform);
 		
 		myDataManager.ReduceHealth (1);
 		
-		GameController_Tank.Instance.UpdateLivesP1 (myDataManager.GetHealth ());
+		GameController.Instance.UpdateLivesP1 (myDataManager.GetHealth ());
 		
 		if (myDataManager.GetHealth () < 1) {
 			if (myBody != null) {
@@ -140,7 +140,7 @@ public class PlayerTopDown_Tank : BaseTopDown
 		Invoke (nameof(MakeVulnerable), 3);
 		
 		myDataManager.SetDetailHealth (100);
-		GameController_Tank.Instance.UpdateLivesDetailP1 (myDataManager.GetDetailHealth ());
+		GameController.Instance.UpdateLivesDetailP1 (myDataManager.GetDetailHealth ());
 		
 		myGameObject.SetActive (true);
 		

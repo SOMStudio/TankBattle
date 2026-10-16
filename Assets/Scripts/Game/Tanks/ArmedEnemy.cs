@@ -1,14 +1,14 @@
 using UnityEngine;
 
-public class ArmedEnemy_Tank : BaseArmedEnemy
+public class ArmedEnemy : BaseArmedEnemy
 {
 	[Header("Settings")]
 	[SerializeField] private float detailedStrange = 100;
 	[SerializeField] private float protection = 1;
 	[SerializeField] private int contactDamage = 1;
 
-	private PlayerManager_Tank playerManager;
-	private UserManager_Tank userManager;
+	private PlayerManager playerManager;
+	private UserManager userManager;
 
 	private bool isRespawning;
 
@@ -50,10 +50,10 @@ public class ArmedEnemy_Tank : BaseArmedEnemy
 
 		if (playerManager == null)
 		{
-			playerManager = (PlayerManager_Tank)myPlayerManager;
+			playerManager = (PlayerManager)myPlayerManager;
 
 			if (playerManager)
-				userManager = (UserManager_Tank)myDataManager;
+				userManager = (UserManager)myDataManager;
 		}
 
 		userManager.SetDetailHealth(detailedStrange);
@@ -61,11 +61,11 @@ public class ArmedEnemy_Tank : BaseArmedEnemy
 
 		BaseAIController aControl = gameObject.GetComponent<BaseAIController>();
 
-		aControl.SetChaseTarget(GameController_Tank.Instance.GetMainPlayerTransform());
+		aControl.SetChaseTarget(GameController.Instance.GetMainPlayerTransform());
 
 		aControl.SetAIState(AIStates.AiState.chasing_target);
 
-		GameController_Tank.Instance.AddEnemyToRadar(myTransform);
+		GameController.Instance.AddEnemyToRadar(myTransform);
 	}
 
 	public void SetContactDamage(int val)
@@ -80,16 +80,16 @@ public class ArmedEnemy_Tank : BaseArmedEnemy
 
 	public void TellGCEnemyDestroyed()
 	{
-		GameController_Tank.Instance.EnemyDestroyed(myTransform.position, pointsValue, tempINT);
+		GameController.Instance.EnemyDestroyed(myTransform.position, pointsValue, tempINT);
 
-		GameController_Tank.Instance.RemoveEnemyFromRadar(myTransform);
+		GameController.Instance.RemoveEnemyFromRadar(myTransform);
 	}
 
 	public void TellGCBossDestroyed()
 	{
-		GameController_Tank.Instance.BossDestroyed();
+		GameController.Instance.BossDestroyed();
 
-		GameController_Tank.Instance.RemoveEnemyFromRadar(myTransform);
+		GameController.Instance.RemoveEnemyFromRadar(myTransform);
 	}
 
 	private void ReduceLife(float val)

@@ -12,7 +12,7 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 	protected Renderer rendererToTestAgainst;
 
 	[Header("Fire value")]
-	[SerializeField] protected Standard_SlotWeaponController weaponControl;
+	[SerializeField] protected SlotWeaponController weaponControl;
 	[SerializeField] protected AiAttackState currentState = AiAttackState.random_fire;
 	[SerializeField] private bool thisGameObjectShouldFire;
 	[SerializeField] private bool onlyFireWhenOnscreen;
@@ -43,7 +43,7 @@ public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 
 		if (weaponControl == null)
 		{
-			weaponControl = myGameObject.GetComponent<Standard_SlotWeaponController>();
+			weaponControl = myGameObject.GetComponent<SlotWeaponController>();
 		}
 
 		if (rendererToTestAgainst == null)
