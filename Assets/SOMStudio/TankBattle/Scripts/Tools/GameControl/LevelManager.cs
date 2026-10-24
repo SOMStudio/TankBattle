@@ -1,54 +1,57 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LevelManager : MonoBehaviour
+namespace SOMStudio.TankBattle.Scripts.Tools.GameControl
 {
-	[SerializeField] private string[] levelNames;
-	[SerializeField] private int gameLevelNum;
-
-	[System.NonSerialized] public static LevelManager Instance;
-
-	private void Awake()
+	public class LevelManager : MonoBehaviour
 	{
-		if (Instance == null)
-			Instance = this;
-		else
-			Destroy(this);
-	}
+		[SerializeField] private string[] levelNames;
+		[SerializeField] private int gameLevelNum;
 
-	private void Start()
-	{
-		DontDestroyOnLoad(gameObject);
-	}
+		[System.NonSerialized] public static LevelManager Instance;
 
-	public string[] LevelNames
-	{
-		get => levelNames;
-		set => levelNames = value;
-	}
+		private void Awake()
+		{
+			if (Instance == null)
+				Instance = this;
+			else
+				Destroy(this);
+		}
 
-	public void LoadLevel(string sceneName)
-	{
-		SceneManager.LoadScene(sceneName);
-	}
+		private void Start()
+		{
+			DontDestroyOnLoad(gameObject);
+		}
 
-	public void ResetGame()
-	{
-		gameLevelNum = 0;
-	}
+		public string[] LevelNames
+		{
+			get => levelNames;
+			set => levelNames = value;
+		}
 
-	public void GoNextLevel()
-	{
-		if (gameLevelNum >= levelNames.Length)
+		public void LoadLevel(string sceneName)
+		{
+			SceneManager.LoadScene(sceneName);
+		}
+
+		public void ResetGame()
+		{
 			gameLevelNum = 0;
+		}
 
-		LoadLevel(gameLevelNum);
+		public void GoNextLevel()
+		{
+			if (gameLevelNum >= levelNames.Length)
+				gameLevelNum = 0;
 
-		gameLevelNum++;
-	}
+			LoadLevel(gameLevelNum);
 
-	private void LoadLevel(int indexNum)
-	{
-		LoadLevel(levelNames[indexNum]);
+			gameLevelNum++;
+		}
+
+		private void LoadLevel(int indexNum)
+		{
+			LoadLevel(levelNames[indexNum]);
+		}
 	}
 }

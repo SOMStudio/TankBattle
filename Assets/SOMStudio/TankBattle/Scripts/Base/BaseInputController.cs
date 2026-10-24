@@ -1,68 +1,71 @@
 using UnityEngine;
 
-[AddComponentMenu("Base/Input Controller")]
-public class BaseInputController : MonoBehaviour
+namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[Header("Fire")]
-	[SerializeField] protected bool fire1;
-
-	[Header("Weapon Slot")] 
-	[SerializeField] protected bool slot1;
-	[SerializeField] protected bool slot2;
-	[SerializeField] protected bool slot3;
-	[SerializeField] protected bool slot4;
-	[SerializeField] protected bool slot5;
-	[SerializeField] protected bool slot6;
-	[SerializeField] protected bool slot7;
-	[SerializeField] protected bool slot8;
-	[SerializeField] protected bool slot9;
-
-	[Header("Shift dir")]
-	[SerializeField] protected float vertical;
-	[SerializeField] protected float horizontal;
-	[SerializeField] protected bool shouldRespawn;
-
-	protected virtual void CheckInput()
+	[AddComponentMenu("Base/Input Controller")]
+	public class BaseInputController : MonoBehaviour
 	{
-		horizontal = Input.GetAxis("Horizontal");
-		vertical = Input.GetAxis("Vertical");
-	}
+		[Header("Fire")]
+		[SerializeField] protected bool fire1;
 
-	public virtual float GetHorizontal()
-	{
-		return horizontal;
-	}
+		[Header("Weapon Slot")] 
+		[SerializeField] protected bool slot1;
+		[SerializeField] protected bool slot2;
+		[SerializeField] protected bool slot3;
+		[SerializeField] protected bool slot4;
+		[SerializeField] protected bool slot5;
+		[SerializeField] protected bool slot6;
+		[SerializeField] protected bool slot7;
+		[SerializeField] protected bool slot8;
+		[SerializeField] protected bool slot9;
 
-	public virtual float GetVertical()
-	{
-		return vertical;
-	}
+		[Header("Shift dir")]
+		[SerializeField] protected float vertical;
+		[SerializeField] protected float horizontal;
+		[SerializeField] protected bool shouldRespawn;
 
-	public bool Up => vertical > 0;
+		protected virtual void CheckInput()
+		{
+			horizontal = Input.GetAxis("Horizontal");
+			vertical = Input.GetAxis("Vertical");
+		}
 
-	public bool Down => vertical < 0;
+		public virtual float GetHorizontal()
+		{
+			return horizontal;
+		}
 
-	public bool Right => horizontal > 0;
+		public virtual float GetVertical()
+		{
+			return vertical;
+		}
 
-	public bool Left => horizontal < 0;
+		public bool Up => vertical > 0;
 
-	public virtual bool GetFire()
-	{
-		return fire1;
-	}
+		public bool Down => vertical < 0;
 
-	public bool GetRespawn()
-	{
-		return shouldRespawn;
-	}
+		public bool Right => horizontal > 0;
 
-	public virtual Vector3 GetMovementDirectionVector()
-	{
-		var res = Vector3.zero;
+		public bool Left => horizontal < 0;
 
-		res.x = horizontal;
-		res.y = vertical;
+		public virtual bool GetFire()
+		{
+			return fire1;
+		}
 
-		return res;
+		public bool GetRespawn()
+		{
+			return shouldRespawn;
+		}
+
+		public virtual Vector3 GetMovementDirectionVector()
+		{
+			var res = Vector3.zero;
+
+			res.x = horizontal;
+			res.y = vertical;
+
+			return res;
+		}
 	}
 }

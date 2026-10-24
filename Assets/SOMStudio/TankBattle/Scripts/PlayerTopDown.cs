@@ -1,3 +1,6 @@
+using SOMStudio.TankBattle.Scripts;
+using SOMStudio.TankBattle.Scripts.Base;
+using SOMStudio.TankBattle.Scripts.Tools.Weapon;
 using UnityEngine;
 
 public class PlayerTopDown : BaseTopDown

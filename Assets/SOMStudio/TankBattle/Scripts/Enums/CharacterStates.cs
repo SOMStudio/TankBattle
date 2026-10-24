@@ -1,4 +1,4 @@
-﻿namespace CharacterStates
+﻿namespace SOMStudio.TankBattle.Scripts.Enums
 {
 	public enum CharacterState {
 		Idle = 0,

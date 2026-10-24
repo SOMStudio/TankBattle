@@ -1,77 +1,81 @@
+using SOMStudio.TankBattle.Scripts.Interface;
 using UnityEngine;
 
-public class UserInterface : BaseUIDataManager
+namespace SOMStudio.TankBattle.Scripts
 {
-	[SerializeField] private int playerLivesDetail;
-
-	[Header("Message Texture")]
-	[SerializeField] private GameObject gameOverMessage;
-	[SerializeField] private GameObject getReadyMessage;
-
-	[System.NonSerialized] public static UserInterface Instance;
-
-	private void Awake()
+	public class UserInterface : BaseUIDataManager
 	{
-		Init();
-	}
+		[SerializeField] private int playerLivesDetail;
 
-	private void Start()
-	{
-		StartGame();
-	}
+		[Header("Message Texture")]
+		[SerializeField] private GameObject gameOverMessage;
+		[SerializeField] private GameObject getReadyMessage;
 
-	private void OnGUI()
-	{
-		GUI.Label(new Rect(10, 10, 100, 50), "PLAYER 1");
-		GUI.Label(new Rect(10, 40, 100, 50), "SCORE " + playerScore);
-		GUI.Label(new Rect(10, 70, 200, 50), "HIGH SCORE " + playerHighScore);
+		[System.NonSerialized] public static UserInterface Instance;
 
-		GUI.Label(new Rect(10, 100, 100, 50), "LIVES " + playerLives);
-		GUI.Label(new Rect(10, 130, 100, 50), "LIVES % " + playerLivesDetail);
-	}
-
-	private void Init()
-	{
-		if (Instance == null)
+		private void Awake()
 		{
-			Instance = this;
+			Init();
 		}
-		else if (Instance != this)
+
+		private void Start()
 		{
-			Destroy(gameObject);
+			StartGame();
 		}
-	}
 
-	private void StartGame()
-	{
-		LoadHighScore();
+		private void OnGUI()
+		{
+			GUI.Label(new Rect(10, 10, 100, 50), "PLAYER 1");
+			GUI.Label(new Rect(10, 40, 100, 50), "SCORE " + playerScore);
+			GUI.Label(new Rect(10, 70, 200, 50), "HIGH SCORE " + playerHighScore);
 
-		HideMessages();
+			GUI.Label(new Rect(10, 100, 100, 50), "LIVES " + playerLives);
+			GUI.Label(new Rect(10, 130, 100, 50), "LIVES % " + playerLivesDetail);
+		}
 
-		Invoke(nameof(ShowGetReady), 1);
-		Invoke(nameof(HideMessages), 2);
-	}
+		private void Init()
+		{
+			if (Instance == null)
+			{
+				Instance = this;
+			}
+			else if (Instance != this)
+			{
+				Destroy(gameObject);
+			}
+		}
 
-	public void UpdateLivesDetail(float aLivesDetail)
-	{
-		playerLivesDetail = Mathf.RoundToInt(aLivesDetail);
-	}
+		private void StartGame()
+		{
+			LoadHighScore();
 
-	public void HideMessages()
-	{
-		gameOverMessage.SetActive(false);
-		getReadyMessage.SetActive(false);
-	}
+			HideMessages();
 
-	public void ShowGetReady()
-	{
-		getReadyMessage.SetActive(true);
-	}
+			Invoke(nameof(ShowGetReady), 1);
+			Invoke(nameof(HideMessages), 2);
+		}
 
-	public void ShowGameOver()
-	{
-		SaveHighScore();
+		public void UpdateLivesDetail(float aLivesDetail)
+		{
+			playerLivesDetail = Mathf.RoundToInt(aLivesDetail);
+		}
 
-		gameOverMessage.SetActive(true);
+		public void HideMessages()
+		{
+			gameOverMessage.SetActive(false);
+			getReadyMessage.SetActive(false);
+		}
+
+		public void ShowGetReady()
+		{
+			getReadyMessage.SetActive(true);
+		}
+
+		public void ShowGameOver()
+		{
+			SaveHighScore();
+
+			gameOverMessage.SetActive(true);
+		}
 	}
 }

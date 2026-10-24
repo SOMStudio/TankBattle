@@ -1,43 +1,47 @@
+using SOMStudio.TankBattle.Scripts.Enums;
+using SOMStudio.TankBattle.Scripts.Tools.Utility;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-[AddComponentMenu("Base/BaseWaypointFollower")]
-public class BaseWaypointFollower : ExtendedCustomMonoBehaviour
+namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[Header("AI Controller")]
-	[SerializeField] private BaseAIController aiController;
-
-	public override void Init()
+	[AddComponentMenu("Base/BaseWaypointFollower")]
+	public class BaseWaypointFollower : ExtendedCustomMonoBehaviour
 	{
-		base.Init();
+		[Header("AI Controller")]
+		[SerializeField] private BaseAIController aiController;
 
-		aiController = myGameObject.GetComponent<BaseAIController>();
+		public override void Init()
+		{
+			base.Init();
 
-		if (aiController == null)
-			aiController = myGameObject.AddComponent<BaseAIController>();
+			aiController = myGameObject.GetComponent<BaseAIController>();
 
-		aiController.Init();
+			if (aiController == null)
+				aiController = myGameObject.AddComponent<BaseAIController>();
 
-		aiController.SetAIControl(true);
+			aiController.Init();
 
-		aiController.SetAIState(AIStates.AiState.translate_along_waypoint_path);
+			aiController.SetAIControl(true);
 
-		didInit = true;
-	}
+			aiController.SetAIState(AiState.translate_along_waypoint_path);
 
-	public virtual void SetAIWayController(WaypointsController aWaypointControl)
-	{
-		if (aiController == null)
-			Init();
+			didInit = true;
+		}
 
-		aiController.SetWayController(aWaypointControl);
-	}
+		public virtual void SetAIWayController(WaypointsController aWaypointControl)
+		{
+			if (aiController == null)
+				Init();
 
-	public virtual void ClearAIWayController()
-	{
-		if (aiController == null)
-			Init();
+			aiController.SetWayController(aWaypointControl);
+		}
 
-		aiController.ClearWayController();
+		public virtual void ClearAIWayController()
+		{
+			if (aiController == null)
+				Init();
+
+			aiController.ClearWayController();
+		}
 	}
 }

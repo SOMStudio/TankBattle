@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class AutomaticDestroyObject : MonoBehaviour
+namespace SOMStudio.TankBattle.Scripts.Tools.Utility
 {
-	[SerializeField] private float timeBeforeObjectDestroys;
-
-	private void Start()
+	public class AutomaticDestroyObject : MonoBehaviour
 	{
-		Invoke(nameof(DestroyGameObject), timeBeforeObjectDestroys);
-	}
+		[SerializeField] private float timeBeforeObjectDestroys;
 
-	private void DestroyGameObject()
-	{
-		Destroy(gameObject);
+		private void Start()
+		{
+			Invoke(nameof(DestroyGameObject), timeBeforeObjectDestroys);
+		}
+
+		private void DestroyGameObject()
+		{
+			Destroy(gameObject);
+		}
 	}
 }

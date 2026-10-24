@@ -1,59 +1,63 @@
+using SOMStudio.TankBattle.Scripts.Base;
 using UnityEngine;
 
-[AddComponentMenu("Common/Weapons/Slot Weapon Controller")]
-public class SlotWeaponController : BaseWeaponController
+namespace SOMStudio.TankBattle.Scripts.Tools.Weapon
 {
-	[Header("Settings")]
-	[SerializeField] private bool allowWeaponSwitchKeys = true;
-
-	private void Update()
+	[AddComponentMenu("Common/Weapons/Slot Weapon Controller")]
+	public class SlotWeaponController : BaseWeaponController
 	{
-		if (!allowWeaponSwitchKeys)
-			return;
+		[Header("Settings")]
+		[SerializeField] private bool allowWeaponSwitchKeys = true;
 
-		if (Input.GetKey("1"))
+		private void Update()
 		{
-			SetWeaponSlot(0);
-		}
+			if (!allowWeaponSwitchKeys)
+				return;
 
-		if (Input.GetKey("2"))
-		{
-			SetWeaponSlot(1);
-		}
+			if (UnityEngine.Input.GetKey("1"))
+			{
+				SetWeaponSlot(0);
+			}
 
-		if (Input.GetKey("3"))
-		{
-			SetWeaponSlot(2);
-		}
+			if (UnityEngine.Input.GetKey("2"))
+			{
+				SetWeaponSlot(1);
+			}
 
-		if (Input.GetKey("4"))
-		{
-			SetWeaponSlot(3);
-		}
+			if (UnityEngine.Input.GetKey("3"))
+			{
+				SetWeaponSlot(2);
+			}
 
-		if (Input.GetKey("5"))
-		{
-			SetWeaponSlot(4);
-		}
+			if (UnityEngine.Input.GetKey("4"))
+			{
+				SetWeaponSlot(3);
+			}
 
-		if (Input.GetKey("6"))
-		{
-			SetWeaponSlot(5);
-		}
+			if (UnityEngine.Input.GetKey("5"))
+			{
+				SetWeaponSlot(4);
+			}
 
-		if (Input.GetKey("7"))
-		{
-			SetWeaponSlot(6);
-		}
+			if (UnityEngine.Input.GetKey("6"))
+			{
+				SetWeaponSlot(5);
+			}
 
-		if (Input.GetKey("8"))
-		{
-			SetWeaponSlot(7);
-		}
+			if (UnityEngine.Input.GetKey("7"))
+			{
+				SetWeaponSlot(6);
+			}
 
-		if (Input.GetKey("9"))
-		{
-			SetWeaponSlot(8);
+			if (UnityEngine.Input.GetKey("8"))
+			{
+				SetWeaponSlot(7);
+			}
+
+			if (UnityEngine.Input.GetKey("9"))
+			{
+				SetWeaponSlot(8);
+			}
 		}
 	}
 }
