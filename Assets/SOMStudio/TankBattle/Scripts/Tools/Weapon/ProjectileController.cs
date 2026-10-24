@@ -1,67 +1,71 @@
+using SOMStudio.TankBattle.Scripts.Base;
 using UnityEngine;
 
-[AddComponentMenu("Common/Projectile Control")]
-public class ProjectileController : MonoBehaviour
+namespace SOMStudio.TankBattle.Scripts.Tools.Weapon
 {
-	[Header("Particle")] [SerializeField] private bool doProjectileHitParticle;
-	[SerializeField] private GameObject particleEffectPrefab;
-
-	[Header("Owner")] [SerializeField] private int ownerType_id;
-
-	private Transform myTransform;
-	private Vector3 tempVEC;
-
-	[SerializeField] private int overrideDamageValue;
-	[SerializeField] private int overridePoints;
-
-	[Header("Ground")] [SerializeField] private bool shouldFollowGround;
-	[SerializeField] private float groundHeightOffset = 15f;
-	[SerializeField] private LayerMask groundLayerMask;
-
-	private bool didPlaySound;
-	private int whichSoundToPlayOnStart = 0;
-
-	private void Start()
+	[AddComponentMenu("Common/Projectile Control")]
+	public class ProjectileController : MonoBehaviour
 	{
-		myTransform = transform;
+		[Header("Particle")] [SerializeField] private bool doProjectileHitParticle;
+		[SerializeField] private GameObject particleEffectPrefab;
 
-		didPlaySound = false;
-	}
+		[Header("Owner")] [SerializeField] private int ownerType_id;
 
-	private void Update()
-	{
-		if (!didPlaySound)
+		private Transform myTransform;
+		private Vector3 tempVEC;
+
+		[SerializeField] private int overrideDamageValue;
+		[SerializeField] private int overridePoints;
+
+		[Header("Ground")] [SerializeField] private bool shouldFollowGround;
+		[SerializeField] private float groundHeightOffset = 15f;
+		[SerializeField] private LayerMask groundLayerMask;
+
+		private bool didPlaySound;
+		private int whichSoundToPlayOnStart = 0;
+
+		private void Start()
 		{
-			BaseSoundController.Instance.PlaySoundByIndex(whichSoundToPlayOnStart, myTransform.position);
-			didPlaySound = true;
+			myTransform = transform;
+
+			didPlaySound = false;
 		}
 
-		if (shouldFollowGround)
+		private void Update()
 		{
-			tempVEC = myTransform.position;
-
-			RaycastHit hit;
-			if (Physics.Raycast(tempVEC, -Vector3.up, out hit, groundLayerMask))
+			if (!didPlaySound)
 			{
-				tempVEC.y = hit.point.y + groundHeightOffset;
-				myTransform.position = tempVEC;
+				BaseSoundController.Instance.PlaySoundByIndex(whichSoundToPlayOnStart, myTransform.position);
+				didPlaySound = true;
+			}
+
+			if (shouldFollowGround)
+			{
+				tempVEC = myTransform.position;
+
+				RaycastHit hit;
+				if (Physics.Raycast(tempVEC, -Vector3.up, out hit, groundLayerMask))
+				{
+					tempVEC.y = hit.point.y + groundHeightOffset;
+					myTransform.position = tempVEC;
+				}
 			}
 		}
-	}
 
-	private void OnCollisionEnter(Collision col)
-	{
-		if (doProjectileHitParticle)
-			Instantiate(particleEffectPrefab, transform.position, Quaternion.identity);
+		private void OnCollisionEnter(Collision col)
+		{
+			if (doProjectileHitParticle)
+				Instantiate(particleEffectPrefab, transform.position, Quaternion.identity);
 
-		Destroy(gameObject);
-	}
+			Destroy(gameObject);
+		}
 
-	public int OverrideDamageValue => overrideDamageValue;
+		public int OverrideDamageValue => overrideDamageValue;
 
-	public void SetOwnerType(int aNum)
-	{
-		ownerType_id = aNum;
-		transform.name = aNum.ToString();
+		public void SetOwnerType(int aNum)
+		{
+			ownerType_id = aNum;
+			transform.name = aNum.ToString();
+		}
 	}
 }

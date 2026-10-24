@@ -1,106 +1,109 @@
 using UnityEngine;
 
-[AddComponentMenu("Base/User Manager")]
-public class BaseUserManager : MonoBehaviour
+namespace SOMStudio.TankBattle.Scripts.Base
 {
-	protected int score;
-	protected int highScore;
-	protected int level;
-	protected int health;
-
-	protected bool isFinished;
-
-	[SerializeField] protected string playerName = "Anonym";
-
-	public virtual void GetDefaultData()
+	[AddComponentMenu("Base/User Manager")]
+	public class BaseUserManager : MonoBehaviour
 	{
-		playerName = "Anonym";
+		protected int score;
+		protected int highScore;
+		protected int level;
+		protected int health;
 
-		score = 0;
-		level = 1;
-		health = 3;
-		highScore = 0;
+		protected bool isFinished;
 
-		isFinished = false;
-	}
+		[SerializeField] protected string playerName = "Anonym";
 
-	public string GetName()
-	{
-		return playerName;
-	}
+		public virtual void GetDefaultData()
+		{
+			playerName = "Anonym";
 
-	public void SetName(string aName)
-	{
-		playerName = aName;
-	}
+			score = 0;
+			level = 1;
+			health = 3;
+			highScore = 0;
 
-	public int GetLevel()
-	{
-		return level;
-	}
+			isFinished = false;
+		}
 
-	public void SetLevel(int num)
-	{
-		level = num;
-	}
+		public string GetName()
+		{
+			return playerName;
+		}
 
-	public int GetHighScore()
-	{
-		return highScore;
-	}
+		public void SetName(string aName)
+		{
+			playerName = aName;
+		}
 
-	public void SetHighScore(int val)
-	{
-		highScore = val;
-	}
+		public int GetLevel()
+		{
+			return level;
+		}
 
-	public int GetScore()
-	{
-		return score;
-	}
+		public void SetLevel(int num)
+		{
+			level = num;
+		}
 
-	public virtual void AddScore(int anAmount)
-	{
-		score += anAmount;
-	}
+		public int GetHighScore()
+		{
+			return highScore;
+		}
 
-	public void LostScore(int num)
-	{
-		score -= num;
-	}
+		public void SetHighScore(int val)
+		{
+			highScore = val;
+		}
 
-	public void SetScore(int num)
-	{
-		score = num;
-	}
+		public int GetScore()
+		{
+			return score;
+		}
 
-	public int GetHealth()
-	{
-		return health;
-	}
+		public virtual void AddScore(int anAmount)
+		{
+			score += anAmount;
+		}
 
-	public void AddHealth(int num)
-	{
-		health += num;
-	}
+		public void LostScore(int num)
+		{
+			score -= num;
+		}
 
-	public void ReduceHealth(int num)
-	{
-		health -= num;
-	}
+		public void SetScore(int num)
+		{
+			score = num;
+		}
 
-	public void SetHealth(int num)
-	{
-		health = num;
-	}
+		public int GetHealth()
+		{
+			return health;
+		}
 
-	public bool GetIsFinished()
-	{
-		return isFinished;
-	}
+		public void AddHealth(int num)
+		{
+			health += num;
+		}
 
-	public void SetIsFinished(bool aVal)
-	{
-		isFinished = aVal;
+		public void ReduceHealth(int num)
+		{
+			health -= num;
+		}
+
+		public void SetHealth(int num)
+		{
+			health = num;
+		}
+
+		public bool GetIsFinished()
+		{
+			return isFinished;
+		}
+
+		public void SetIsFinished(bool aVal)
+		{
+			isFinished = aVal;
+		}
 	}
 }

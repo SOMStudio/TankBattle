@@ -1,4 +1,4 @@
-namespace AIStates
+namespace SOMStudio.TankBattle.Scripts.Enums
 {
 	public enum AiState
 	{

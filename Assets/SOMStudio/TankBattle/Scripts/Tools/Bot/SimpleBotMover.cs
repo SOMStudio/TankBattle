@@ -1,36 +1,40 @@
+using SOMStudio.TankBattle.Scripts.Base;
 using UnityEngine;
 
-public class SimpleBotMover : ExtendedCustomMonoBehaviour
+namespace SOMStudio.TankBattle.Scripts.Tools.Bot
 {
-	[SerializeField] private float turnSpeed = 0.5f;
-	[SerializeField] private float moveSpeed = 0.5f;
-
-	[SerializeField] private BaseAIController aiController;
-	[SerializeField] private Vector3 centerOfGravity;
-
-	private void Update()
+	public class SimpleBotMover : ExtendedCustomMonoBehaviour
 	{
-		myTransform.Rotate(new Vector3(0, Time.deltaTime * aiController.GetHorizontal() * turnSpeed, 0));
+		[SerializeField] private float turnSpeed = 0.5f;
+		[SerializeField] private float moveSpeed = 0.5f;
 
-		if (myBody != null)
+		[SerializeField] private BaseAIController aiController;
+		[SerializeField] private Vector3 centerOfGravity;
+
+		private void Update()
 		{
-			myBody.AddForce(myTransform.forward * (moveSpeed * Time.deltaTime * aiController.GetVertical()),
-				ForceMode.VelocityChange);
-		}
-	}
+			myTransform.Rotate(new Vector3(0, Time.deltaTime * aiController.GetHorizontal() * turnSpeed, 0));
 
-	public override void Init()
-	{
-		base.Init();
-
-		if (!aiController)
-		{
-			aiController = myTransform.GetComponent<BaseAIController>();
+			if (myBody != null)
+			{
+				myBody.AddForce(myTransform.forward * (moveSpeed * Time.deltaTime * aiController.GetVertical()),
+					ForceMode.VelocityChange);
+			}
 		}
 
-		if (!myBody)
+		public override void Init()
 		{
-			myBody.centerOfMass = centerOfGravity;
+			base.Init();
+
+			if (!aiController)
+			{
+				aiController = myTransform.GetComponent<BaseAIController>();
+			}
+
+			if (!myBody)
+			{
+				myBody.centerOfMass = centerOfGravity;
+			}
 		}
 	}
 }

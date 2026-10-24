@@ -1,13 +1,16 @@
 using UnityEngine;
 
-public static class RendererExtensions
+namespace SOMStudio.TankBattle.Scripts.Tools.Utility
 {
-	public static bool IsVisibleFrom(this Renderer renderer, Camera camera)
+	public static class RendererExtensions
 	{
-		if (camera == null)
-			return true;
+		public static bool IsVisibleFrom(this Renderer renderer, UnityEngine.Camera camera)
+		{
+			if (camera == null)
+				return true;
 
-		Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
-		return GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
+			Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
+			return GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
+		}
 	}
 }

@@ -1,43 +1,46 @@
 using UnityEngine;
 
-[AddComponentMenu("Base/Player Manager")]
-public class BasePlayerManager : MonoBehaviour
+namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[SerializeField] protected bool didInit;
-	[SerializeField] protected BaseUserManager dataManager;
-
-	private void Awake()
+	[AddComponentMenu("Base/Player Manager")]
+	public class BasePlayerManager : MonoBehaviour
 	{
-		Init();
-	}
+		[SerializeField] protected bool didInit;
+		[SerializeField] protected BaseUserManager dataManager;
 
-	public virtual void Init()
-	{
-		if (!dataManager)
+		private void Awake()
 		{
-			dataManager = gameObject.GetComponent<BaseUserManager>();
-
-			if (!dataManager)
-				dataManager = gameObject.AddComponent<BaseUserManager>();
+			Init();
 		}
 
-		dataManager.GetDefaultData();
+		public virtual void Init()
+		{
+			if (!dataManager)
+			{
+				dataManager = gameObject.GetComponent<BaseUserManager>();
 
-		didInit = true;
-	}
+				if (!dataManager)
+					dataManager = gameObject.AddComponent<BaseUserManager>();
+			}
 
-	public BaseUserManager GetDataManager()
-	{
-		return dataManager;
-	}
+			dataManager.GetDefaultData();
 
-	public virtual void GameFinished()
-	{
-		dataManager.SetIsFinished(true);
-	}
+			didInit = true;
+		}
 
-	public virtual void GameStart()
-	{
-		dataManager.SetIsFinished(false);
+		public BaseUserManager GetDataManager()
+		{
+			return dataManager;
+		}
+
+		public virtual void GameFinished()
+		{
+			dataManager.SetIsFinished(true);
+		}
+
+		public virtual void GameStart()
+		{
+			dataManager.SetIsFinished(false);
+		}
 	}
 }
