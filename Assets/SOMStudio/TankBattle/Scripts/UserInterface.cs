@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts
 {
+	[AddComponentMenu("SOMStudio/TankBattle/User Interface")]
 	public class UserInterface : BaseUIDataManager
 	{
 		[SerializeField] private int playerLivesDetail;

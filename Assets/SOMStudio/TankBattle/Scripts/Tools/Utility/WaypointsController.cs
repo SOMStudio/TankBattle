@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Tools.Utility
 {
-	[AddComponentMenu("Utility/Waypoints Controller")]
+	[AddComponentMenu("SOMStudio/TankBattle/Tools/Waypoints Controller")]
 	public class WaypointsController : MonoBehaviour
 	{
 		[SerializeField] private Transform[] transforms;

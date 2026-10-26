@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/AI Weapon Controller")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/AI Weapon Controller")]
 	public class BaseArmedEnemy : ExtendedCustomMonoBehaviour
 	{
 		[Header("Main value")]

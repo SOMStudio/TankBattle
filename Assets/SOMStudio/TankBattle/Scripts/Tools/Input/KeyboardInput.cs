@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Tools.Input
 {
-	[AddComponentMenu("Common/Keyboard Input Controller")]
+	[AddComponentMenu("SOMStudio/TankBattle/Tools/Keyboard Input Controller")]
 	public class KeyboardInput : BaseInputController
 	{
 		private void LateUpdate()

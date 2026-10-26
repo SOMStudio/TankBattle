@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/Input Controller")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Input Controller")]
 	public class BaseInputController : MonoBehaviour
 	{
 		[Header("Fire")]

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/Weapon Controller")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Weapon Controller")]
 	public class BaseWeaponController : MonoBehaviour
 	{
 		[Header("Base")]

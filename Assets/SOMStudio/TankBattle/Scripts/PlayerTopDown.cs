@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts
 {
+	[AddComponentMenu("SOMStudio/TankBattle/Player Top Down")]
 	public class PlayerTopDown : BaseTopDown
 	{
 		private bool isInvulnerable;

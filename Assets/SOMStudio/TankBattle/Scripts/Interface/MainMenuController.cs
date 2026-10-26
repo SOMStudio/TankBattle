@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Interface
 {
-	[AddComponentMenu("UI/Generic Main Menu")]
+	[AddComponentMenu("SOMStudio/TankBattle/UI/Generic Main Menu")]
 	public class MainMenuController : MonoBehaviour
 	{
 		[SerializeField] private int whichMenu;

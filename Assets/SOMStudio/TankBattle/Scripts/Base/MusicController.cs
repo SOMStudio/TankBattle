@@ -2,7 +2,7 @@
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/Music Clip")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Music Clip")]
 	public class MusicController : MonoBehaviour
 	{
 		[SerializeField] private string gamePrefsName = "DefaultGame";

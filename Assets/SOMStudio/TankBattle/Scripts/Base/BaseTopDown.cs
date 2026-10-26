@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/Character/Third Person")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Top-Down Person")]
 	public class BaseTopDown : ExtendedCustomMonoBehaviour
 	{
 		[Header("Main value")]

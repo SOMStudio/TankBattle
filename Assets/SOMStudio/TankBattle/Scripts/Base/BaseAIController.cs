@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/AI Controller")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/AI Controller")]
 	public class BaseAIController : ExtendedCustomMonoBehaviour
 	{
 		[Header("Move")]
@@ -67,7 +67,7 @@ namespace SOMStudio.TankBattle.Scripts.Base
 		private int obstacleFinderResult;
 		[SerializeField] private Transform rotateTransform;
 
-		[System.NonSerialized] public Vector3 RelativeWaypointPosition;
+		[System.NonSerialized] public Vector3 relativeWaypointPosition;
 
 		public bool aiControlled = true;
 
@@ -295,13 +295,13 @@ namespace SOMStudio.TankBattle.Scripts.Base
 						return;
 					}
 
-					RelativeWaypointPosition = myTransform.InverseTransformPoint(currentWaypointTransform.position);
+					relativeWaypointPosition = myTransform.InverseTransformPoint(currentWaypointTransform.position);
 
-					horz = (RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude);
+					horz = (relativeWaypointPosition.x / relativeWaypointPosition.magnitude);
 
 					if (Mathf.Abs(horz) < 0.5f)
 					{
-						vert = RelativeWaypointPosition.z / RelativeWaypointPosition.magnitude - Mathf.Abs(horz);
+						vert = relativeWaypointPosition.z / relativeWaypointPosition.magnitude - Mathf.Abs(horz);
 					}
 					else
 					{
@@ -318,9 +318,9 @@ namespace SOMStudio.TankBattle.Scripts.Base
 						return;
 					}
 
-					RelativeWaypointPosition = transform.InverseTransformPoint(followTarget.position);
+					relativeWaypointPosition = transform.InverseTransformPoint(followTarget.position);
 
-					horz = (RelativeWaypointPosition.x / RelativeWaypointPosition.magnitude);
+					horz = (relativeWaypointPosition.x / relativeWaypointPosition.magnitude);
 
 					if (Vector3.Distance(followTarget.position, myTransform.position) > minChaseDistance)
 					{

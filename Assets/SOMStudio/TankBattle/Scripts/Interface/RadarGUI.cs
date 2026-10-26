@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Interface
 {
+	[AddComponentMenu("SOMStudio/TankBattle/UI/Radar")]
 	public class RadarGUI : MonoBehaviour
 	{
 		private Transform centerObject;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/Base Weapon Script")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Weapon Script")]
 	public class BaseWeaponScript : ExtendedCustomMonoBehaviour
 	{
 		private bool canFire;

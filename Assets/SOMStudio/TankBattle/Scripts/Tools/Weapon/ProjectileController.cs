@@ -3,16 +3,18 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Tools.Weapon
 {
-	[AddComponentMenu("Common/Projectile Control")]
+	[AddComponentMenu("SOMStudio/TankBattle/Tools/Projectile Control")]
 	public class ProjectileController : MonoBehaviour
 	{
-		[Header("Particle")] [SerializeField] private bool doProjectileHitParticle;
+		[Header("Particle")]
+		[SerializeField] private bool doProjectileHitParticle;
 		[SerializeField] private GameObject particleEffectPrefab;
 
-		[Header("Owner")] [SerializeField] private int ownerType_id;
+		[Header("Owner")]
+		[SerializeField] private int ownerTypeId;
 
 		private Transform myTransform;
-		private Vector3 tempVEC;
+		private Vector3 tempVector;
 
 		[SerializeField] private int overrideDamageValue;
 		[SerializeField] private int overridePoints;
@@ -22,7 +24,7 @@ namespace SOMStudio.TankBattle.Scripts.Tools.Weapon
 		[SerializeField] private LayerMask groundLayerMask;
 
 		private bool didPlaySound;
-		private int whichSoundToPlayOnStart = 0;
+		private readonly int whichSoundToPlayOnStart = 0;
 
 		private void Start()
 		{
@@ -41,13 +43,13 @@ namespace SOMStudio.TankBattle.Scripts.Tools.Weapon
 
 			if (shouldFollowGround)
 			{
-				tempVEC = myTransform.position;
+				tempVector = myTransform.position;
 
 				RaycastHit hit;
-				if (Physics.Raycast(tempVEC, -Vector3.up, out hit, groundLayerMask))
+				if (Physics.Raycast(tempVector, -Vector3.up, out hit, groundLayerMask))
 				{
-					tempVEC.y = hit.point.y + groundHeightOffset;
-					myTransform.position = tempVEC;
+					tempVector.y = hit.point.y + groundHeightOffset;
+					myTransform.position = tempVector;
 				}
 			}
 		}
@@ -64,7 +66,7 @@ namespace SOMStudio.TankBattle.Scripts.Tools.Weapon
 
 		public void SetOwnerType(int aNum)
 		{
-			ownerType_id = aNum;
+			ownerTypeId = aNum;
 			transform.name = aNum.ToString();
 		}
 	}

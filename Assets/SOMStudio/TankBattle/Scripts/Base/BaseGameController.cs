@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/GameController")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Game Controller")]
 	public class BaseGameController : MonoBehaviour
 	{
 		private bool paused;

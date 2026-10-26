@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Interface
 {
-	[AddComponentMenu("Base/UI Data Manager")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/UI/Data Manager")]
 	public class BaseUIDataManager : MonoBehaviour
 	{
 		[SerializeField] protected string gamePrefsName = "DefaultGame";

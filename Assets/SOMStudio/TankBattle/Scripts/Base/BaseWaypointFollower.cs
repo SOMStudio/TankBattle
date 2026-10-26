@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/BaseWaypointFollower")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Waypoint Follower")]
 	public class BaseWaypointFollower : ExtendedCustomMonoBehaviour
 	{
 		[Header("AI Controller")]

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/Player Manager")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Player Manager")]
 	public class BasePlayerManager : MonoBehaviour
 	{
 		[SerializeField] protected bool didInit;

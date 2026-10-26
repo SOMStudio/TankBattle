@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts
 {
+	[AddComponentMenu("SOMStudio/TankBattle/Spawn Controller")]
 	public class SpawnController : MonoBehaviour {
 
 		[Header("Settings")]
@@ -15,7 +16,7 @@ namespace SOMStudio.TankBattle.Scripts
 		[SerializeField] private Transform spawnParent;
 		[SerializeField] private GameObject spawnParticle;
 
-		private int countSpawnedObject = 0;
+		private int countSpawnedObject;
 
 		[System.NonSerialized]
 		public static SpawnController Instance;

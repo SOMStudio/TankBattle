@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace SOMStudio.TankBattle.Scripts
 {
+	[AddComponentMenu("SOMStudio/TankBattle/Game Controller")]
 	public class GameController : BaseGameController
 	{
 		[Header("Main Settings")]

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/Sound Controller")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Sound Controller")]
 	public class BaseSoundController : MonoBehaviour
 	{
 		[SerializeField]
@@ -50,14 +50,7 @@ namespace SOMStudio.TankBattle.Scripts.Base
 			DontDestroyOnLoad(this.gameObject);
 
 			string stKey = $"{gamePrefsName}_SFXVol";
-			if (PlayerPrefs.HasKey(stKey))
-			{
-				volume = PlayerPrefs.GetFloat(stKey);
-			}
-			else
-			{
-				volume = 0.5f;
-			}
+			volume = PlayerPrefs.HasKey(stKey) ? PlayerPrefs.GetFloat(stKey) : 0.5f;
 
 			soundObjectList = new List<SoundObject>();
 

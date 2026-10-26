@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Tools.Weapon
 {
-	[AddComponentMenu("Common/Weapons/Slot Weapon Controller")]
+	[AddComponentMenu("SOMStudio/TankBattle/Tools/Slot Weapon Controller")]
 	public class SlotWeaponController : BaseWeaponController
 	{
 		[Header("Settings")]

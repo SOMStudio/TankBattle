@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/User Manager")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/User Manager")]
 	public class BaseUserManager : MonoBehaviour
 	{
 		protected int score;

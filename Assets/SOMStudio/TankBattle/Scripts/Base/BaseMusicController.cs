@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts.Base
 {
-	[AddComponentMenu("Base/Music Controller")]
+	[AddComponentMenu("SOMStudio/TankBattle/Base/Music Controller")]
 	public class BaseMusicController : MonoBehaviour {
 
 		[SerializeField]

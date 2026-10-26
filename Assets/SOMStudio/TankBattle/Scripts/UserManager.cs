@@ -3,19 +3,20 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts
 {
-	public class UserManager : BaseUserManager {
-
+	[AddComponentMenu("SOMStudio/TankBattle/User Manager")]
+	public class UserManager : BaseUserManager
+	{
 		[SerializeField] private float detailedHealth;
 		[SerializeField] private float protection;
-	
+
 		public override void GetDefaultData()
 		{
-			base.GetDefaultData ();
+			base.GetDefaultData();
 
 			detailedHealth = 100;
 			protection = 1;
 		}
-	
+
 		public float GetProtection()
 		{
 			return protection;
@@ -35,7 +36,7 @@ namespace SOMStudio.TankBattle.Scripts
 		{
 			protection = num;
 		}
-	
+
 		public float GetDetailHealth()
 		{
 			return detailedHealth;

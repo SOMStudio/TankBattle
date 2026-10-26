@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace SOMStudio.TankBattle.Scripts
 {
+	[AddComponentMenu("SOMStudio/TankBattle/Armed Enemy")]
 	public class ArmedEnemy : BaseArmedEnemy
 	{
 		[Header("Settings")]
